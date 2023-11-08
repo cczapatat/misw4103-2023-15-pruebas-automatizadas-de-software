@@ -46,3 +46,7 @@ Thumbs.db
 
 #Sonar
 ./scannerwork
+
+kraken/reports/
+kraken/node_modules/
+kraken/.kraken/
