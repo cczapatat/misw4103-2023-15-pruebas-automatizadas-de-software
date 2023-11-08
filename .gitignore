@@ -50,3 +50,5 @@ Thumbs.db
 /kraken/reports/
 /kraken/node_modules/
 /kraken/.kraken/
+
+/cypress/cypress/downloads/
