@@ -48,6 +48,7 @@ Thumbs.db
 ./scannerwork
 
 /kraken/reports/
+/kraken/reports/*
 /kraken/node_modules/
 /kraken/.kraken/
 
