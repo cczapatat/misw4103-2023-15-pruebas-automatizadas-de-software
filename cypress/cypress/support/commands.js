@@ -78,27 +78,38 @@ Cypress.Commands.add('site', () => {
     cy.wait(1000)
 })
 
+Cypress.Commands.add('searchGlobalAndClick', (value) => {
+    cy.get('button.gh-nav-btn-search').click();
+    cy.wait(500);
+    cy.get('input[name="selectSearchTerm"].gh-input-with-select-input').type(value);
+    cy.wait(1000);
+    cy.screenshot();
+    cy.contains(value).click();
+    cy.wait(1000);
+    cy.screenshot();
+});
+
 Cypress.Commands.add('listPages', () => {
-    // cy.get('a[href="#/pages/"]').click()
-    cy.visit('/ghost/#/pages/')
-    // cy.url().should('include', 'pages')
-    cy.wait(1000)
-    cy.screenshot()
+    cy.visit('/ghost/#/pages/');
+    cy.url().should('include', 'pages');
+    cy.wait(1000);
+    cy.screenshot();
 })
 
 Cypress.Commands.add('listPagesAndCheck', (page) => {
     cy.wait(1000)
-    cy.get('a[href="#/pages/"]').click()
+    cy.visit('/ghost/#/pages/')
     cy.url().should('include', 'pages')
     cy.contains(page)
     cy.screenshot()
 })
 
 Cypress.Commands.add('newPage', () => {
-    // cy.get('a[href="#/editor/page/"]').click()
-    cy.contains('New page').click()
-    cy.url().should('include', 'editor/page')
-    cy.screenshot()	
+    cy.wait(500);
+    cy.contains('New page').click();
+    cy.wait(1000);
+    cy.url().should('include', 'editor/page');
+    cy.screenshot();
 })
 
 Cypress.Commands.add('createPage', (title, description) => {
@@ -191,15 +202,21 @@ Cypress.Commands.add('clickFirstPage', () => {
 })
 
 Cypress.Commands.add('schedulePage', () => {
-    cy.contains('Publish').click()
-    cy.get(':nth-child(2) > .gh-publishmenu-radio-button').click()
-    cy.get('.gh-publishmenu-footer .gh-btn-icon span').click()
-    // cy.get('.modal-footer .gh-btn:not(:first-child)').click()
-    cy.get('button.gh-btn.gh-btn-black.gh-publishmenu-button.gh-btn-icon.ember-view').click()
-    cy.wait(2000)
+    cy.wait(500);
+    cy.contains('Publish').click();
+    cy.screenshot();
+    cy.wait(500);
+    cy.contains('Right now').click();
+    cy.wait(500);
+    cy.contains('Schedule for later').click();
+    cy.wait(500);
+    cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click();
+    cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+    cy.wait(1000);
 })
 
 Cypress.Commands.add('publishPage', () => {
+    cy.wait(500);
     cy.contains('Publish').click()
     cy.screenshot()
     cy.wait(2000)
@@ -234,7 +251,9 @@ Cypress.Commands.add('filterDraftPages', () => {
 })
 
 Cypress.Commands.add('filterScheduledPages', () => {
+    cy.goToDashboard();
     cy.visit('/ghost/#/pages?type=scheduled')
+    cy.wait(1000);
     cy.url().should('include', 'scheduled')
     cy.wait(2000)
 })
@@ -313,14 +332,29 @@ Cypress.Commands.add('listPostAndCheck', (post) => {
 })
 
 Cypress.Commands.add('schedulePost', () => {
-    cy.contains('Publish').click()
-    cy.get(':nth-child(2) > .gh-publishmenu-radio-button').click()
-    cy.get('.gh-publishmenu-footer .gh-btn-icon span').click()
-    // cy.get('.modal-footer .gh-btn:not(:first-child)').click()
-        //cy.get('button.gh-btn.gh-btn-black.gh-publishmenu-button.gh-btn-icon.ember-view').click()
-    cy.get('.modal-footer .gh-btn:not(:first-child)').click()
-    cy.wait(2000)
+    cy.wait(500);
+    cy.contains('Publish').click();
+    cy.screenshot();
+    cy.wait(500);
+    cy.contains('Right now').click();
+    cy.wait(500);
+    cy.contains('Schedule for later').click();
+    cy.wait(500);
+    cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click();
+    cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+    cy.wait(1000);
 })
+
+Cypress.Commands.add('unschedulePost', () => {
+    cy.wait(500);
+    cy.contains('Unschedule').click();
+    cy.screenshot();
+    cy.wait(500);
+    cy.get('button.gh-revert-to-draft').click();
+    cy.wait(500);
+    cy.screenshot();
+    cy.wait(1000);
+});
 
 Cypress.Commands.add('publishPost', () => {
     cy.wait(2000)
@@ -328,7 +362,7 @@ Cypress.Commands.add('publishPost', () => {
     cy.screenshot()
     cy.wait(2000)
 	cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click()
-	cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click()	
+	cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click()
     cy.wait(1000)
 })
 
@@ -339,7 +373,9 @@ Cypress.Commands.add('filterDraftPost', () => {
 })
 
 Cypress.Commands.add('filterScheduledPost', () => {
+    cy.goToDashboard();
     cy.visit('/ghost/#/posts?type=scheduled')
+    cy.wait(1000);
     cy.url().should('include', 'scheduled')
     cy.wait(2000)
 })
@@ -354,6 +390,14 @@ Cypress.Commands.add('filterOldestPost', () => {
     cy.visit('/ghost/#/posts?order=published_at%20asc')
     cy.url().should('include', 'order=published_at')
     cy.wait(2000)
+})
+
+Cypress.Commands.add('filterPostByTag', tag => {
+    cy.goToDashboard();
+    cy.visit(`/ghost/#/posts?tag=${tag}`);
+    cy.wait(1000);
+    cy.url().should('include', `tag=${tag}`);
+    cy.wait(500);
 })
 
 Cypress.Commands.add('filterRecentrlyUpdatedPost', () => {
@@ -398,25 +442,14 @@ Cypress.Commands.add('backToEditorPage', () => {
     cy.screenshot()
 })
 
-Cypress.Commands.add('editTagPost', (tag) => {
-    cy.get('button[title="Settings"]').click()
-
-    cy.get('#tag-input').type(tag +'{enter}')
-    cy.screenshot()
-    // cy.get('.settings-menu-toggle').click()
-  
-    cy.get('button[title="Settings"]').click()
-        // cy.get('button.settings-menu-toggle.gh-btn.gh-btn-editor.gh-btn-icon.icon-only.gh-btn-action-icon').click()
-
-
-    cy.contains('Update').click()
-
-    cy.get('button.gh-btn.gh-btn-black.gh-publishmenu-button.gh-btn-icon.ember-view').click()
-   
-    // cy.get('.gh-publishmenu-button').click()
-    cy.wait(2000)
-    cy.screenshot()		
-})
+Cypress.Commands.add('addTagToPost', (tag) => {
+    cy.get('button[title="Settings"]').click();
+    cy.wait(500);
+    cy.get('#tag-input ul:first > input.ember-power-select-trigger-multiple-input').type(`${tag}{enter}`);
+    cy.screenshot();
+    cy.get('button[title="Settings"]').click();
+    cy.wait(500);
+});
 
 Cypress.Commands.add('deleteTag', () => {
     cy.get('button[data-test-button="delete-tag"]').click() 
@@ -426,7 +459,6 @@ Cypress.Commands.add('deleteTag', () => {
     cy.screenshot()
     // cy.get('.modal-footer .gh-btn:not(:first-child)').click()
 })
-
 
 Cypress.Commands.add('listTags', () => {
     cy.visit('/ghost/#/tags/')
@@ -468,7 +500,6 @@ Cypress.Commands.add('clickFirstTag', () => {
     cy.screenshot()
 })
 
-
 Cypress.Commands.add('filterInternalTags', () => {
     cy.visit('/ghost/#/tags?type=internal')
     cy.url().should('include', 'internal')
@@ -488,5 +519,4 @@ Cypress.Commands.add('deleteAll', () => {
     cy.get('button.gh-btn.gh-btn-red.gh-btn-icon.ember-view').click({force: true});
     cy.wait(1000)
     cy.get('button.gh-alert-close').click();
-
 })
