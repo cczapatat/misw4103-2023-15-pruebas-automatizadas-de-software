@@ -1,51 +1,63 @@
-const { Given, When, Then } = require('@cucumber/cucumber');
-const expect = require('chai').expect;
+const { assert, expect } = require('chai');
+const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 
-When('User enters {string} on {string} field', async function(text, component_class) {
-    
-    //if component_id has id=, then select component by id, otherwise, select by class
-    let selectedComponent = await this.driver.$(`.${component_class}`); 
-       
-    return await selectedComponent.setValue(text);
-})
+const URL_BASE = 'http://localhost:2368/ghost/#';
 
-When('User clicks on button {string}', async function(button_id) {
-    
-    //if component_id has id=, then select component by id, otherwise, select by class
-    let selectedComponent = await this.driver.$(`${button_id}`); 
-       
-    //click the selected component
-    return await selectedComponent.click();
-})
+function selectComponent(context, componentDetails) {
+    context.driver.$(componentDetails).waitForExist(5000);
+    context.driver.$(componentDetails).waitForDisplayed(5000);
 
+    return context.driver.$(componentDetails);
+}
 
-Then('User visualizes {string} page', async function(page_url) {
-    
-    //check if the user is on the page, by validating the url, i.e the page url is http://localhost:2368/ghost/#/dashboard and the page_url is /dashboard,
-    //if the page_url is /dashboard, then the user is on the page, otherwise is not
-    onPage = false;
+async function login(context) {
+    await context.driver.url(`${URL_BASE}/signin/`);
+    await selectComponent(context, '.gh-input.email').setValue('admin@email.com');
+    await selectComponent(context, '.gh-input.password').setValue('pruebasE2E');
+    await selectComponent(context, `[data-test-button='sign-in']`).click();
+}
+
+async function logout(context) {
+    await context.driver.url(`${URL_BASE}/signout/`);
+}
+
+async function deleteAll(context) {
+    await context.driver.url(`${URL_BASE}/settings/labs`);
+    await selectComponent(context, `button[data-test-button="delete-all"]`).click();
+    await selectComponent(context, `button.gh-btn.gh-btn-red.gh-btn-icon.ember-view`).click();
+    await selectComponent(context, `button.gh-alert-close`).click();
+}
+
+async function goToDashboard(context) {
+    await context.driver.url(`${URL_BASE}/dashboard`);
+}
+
+async function setUp(context) {
+    await login(context);
+    await deleteAll(context);
+    await goToDashboard(context);
+}
+
+Before(async function () {
+    await setUp(this);
+});
+
+After(async function () {
+    await deleteAll(this);
+    await logout(this);
+});
+
+Given('Admin starts app', async function () {
     const currentPage = await this.driver.getUrl();
+    assert.isTrue(currentPage.includes('ghost/#/dashboard'));
+});
 
-    if (currentPage.includes(page_url)) {
-        onPage = true;
-    }
+When('Admin navigates to {string} page', async function(pageUrl) {
+    const newUrl = pageUrl[0] === '/' ? pageUrl.substring(1) : pageUrl;
+    await this.driver.url(`${URL_BASE}/${newUrl}`);
+});
 
-    expect(onPage).to.be.true;
-})
-
-Then('User goes to {string}', async function(page_url) {
-    
-    //navigate to the page page_url
-    return await this.driver.url(page_url);
-})
-
-When('User navigates to {string} page', async function(page_url) {
-    
-    //get the current page url
-    const pageUrl = new URL(await this.driver.getUrl());
-    //get the root page url, i.e http://localhost:2368/ghost/#/dashboard -> http://localhost:2368/ghost/
-    const rootPageUrl = `${pageUrl.protocol}//${pageUrl.host}/ghost/#`;
-    //navigate to the root page url with the page_url, i.e http://localhost:2368/ghost/ + /#/dashboard -> http://localhost:2368/ghost/#/dashboard
-
-    return await this.driver.url(`${rootPageUrl}${page_url}`);
-})
+Then('Admin visualizes {string} page', async function (pageUrl) {
+    const currentPage = await this.driver.getUrl();
+    assert.isTrue(currentPage.includes(pageUrl));
+});
