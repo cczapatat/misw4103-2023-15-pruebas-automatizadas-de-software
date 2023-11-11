@@ -48,6 +48,7 @@ async function addTagToPost(context, tag) {
     await selectComponent(context, `li=${tag}`).click();
     await wait(1);
     await selectComponent(context, 'button[title="Settings"]').click();
+    await wait(0.5);
 }
 
 async function createNewTag(context) {
@@ -88,16 +89,20 @@ async function deleteAll(context) {
     await selectComponent(context, `button.gh-btn.gh-btn-red.gh-btn-icon.ember-view`).click();
     await wait(1);
     await selectComponent(context, `button.gh-alert-close`).click();
+    await wait(0.5);
 }
 
 async function goToDashboard(context) {
     await context.driver.url(`${URL_BASE}/dashboard`);
 }
 
-async function searchGlobalAndClick(context) {
+async function searchGlobalAndClick(context, title) {
     await selectComponent(context, 'button.gh-nav-btn-search').click();
     await wait(1);
-    await selectComponent(context, 'input[name="selectSearchTerm"].gh-input-with-select-input').click();
+    await selectComponent(context, 'input[name="selectSearchTerm"].gh-input-with-select-input').setValue(title);
+    await wait(1);
+    await selectComponent(context, 'li.ember-power-select-option').click();
+    await wait(0.5);
 }
 
 async function newPost(context) {
@@ -132,6 +137,7 @@ async function publishPost(context) {
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
     await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+    await wait(1);
 }
 
 async function schedulePost(context) {
@@ -144,6 +150,7 @@ async function schedulePost(context) {
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
     await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+    await wait(1);
 }
 
 async function deletePost(context) {
@@ -188,7 +195,6 @@ async function listPagesAndCheck(context, page) {
     const currentPage = await this.driver.getUrl();
     await context.driver.url(`${URL_BASE}/pages`);
     assert.isTrue(currentPage.includes('ghost/#/pages'));
-    //check page is displayed
 }
 
 async function listDraftPosts(context) {
@@ -201,10 +207,10 @@ async function newPage(context) {
 
 async function createPage(context, titulo, descripcion) {
     await selectComponent(context, 'textarea[placeholder="Page title"]').setValue(titulo);
-    wait(1)
+    await wait(1);
     const element = await selectComponent(context, '.koenig-react-editor')
     await element.click();
-    wait(1)
+    await wait(1);
     await element.setValue(descripcion);
 
 }
@@ -213,9 +219,9 @@ async function editPage(context, titulo, descripcion) {
     await selectComponent(context, 'textarea[placeholder="Page title"]').setValue(titulo)
     const element = await selectComponent(context, '.koenig-react-editor')
     await element.click();
-    wait(1)
+    await wait(1);
     await element.clearValue();
-    wait(1)
+    await wait(1);
     await element.setValue(descripcion);
 
     await selectComponent(context, 'span=Update').click();
@@ -231,50 +237,54 @@ async function clickFirstPage(context) {
 
 async function publishPage(context) {
     await selectComponent(context, 'span=Publish').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+    await wait(1);
 }
 
 async function schedulePage(context) {
     await selectComponent(context, 'span=Publish').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'span=Right now').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'label=Schedule for later').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+    await wait(1);
 }
 
 async function deletePage(context) {
     await selectComponent(context, 'button[title="Settings"]').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-outline.gh-btn-icon.gh-btn-fullwidth').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'span=Delete').click();
+    await wait(1);
 }
 
 async function unschedulePage(context) {
     await selectComponent(context, 'span=Unschedule').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'button.gh-revert-to-draft').click();
+    await wait(1);
 }
 
 async function addTagToPage(context, tag) {
     await selectComponent(context, 'button[title="Settings"]').click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, '#tag-input').click()
-    wait(1)
+    await wait(1);
     await selectComponent(context, '#tag-input').setValue(tag)
-    wait(1)
+    await wait(1);
     await selectComponent(context, `li=${tag}`).click();
-    wait(1)
+    await wait(1);
     await selectComponent(context, 'button[title="Settings"]').click();
+    await wait(1);
 }
-
 
 Before(async function () {
     await setUp(this);
@@ -347,9 +357,13 @@ When('Admin click on New Page', async function () {
 });
 
 When('Admin create a New Page', async function () {
-    let titulo = faker.person.jobTitle()
-    let descripcion = faker.lorem.paragraphs(2)
-    await createPage(this, titulo, descripcion);
+    const title = faker.person.jobTitle()
+    const description = faker.lorem.paragraphs(2)
+    await createPage(this, title, description);
+});
+
+When('Admin create a New Page with title {string}', async function (title) {
+    await createPage(this, title, faker.lorem.paragraphs(2));
 });
 
 When('Admin click the first Page', async function () {
@@ -411,12 +425,22 @@ When('Admin adds tag {string} to post', async function (tag) {
     await addTagToPost(this, tag);
 });
 
+When('Admin searches {string} and click on it', async function (value) {
+    await searchGlobalAndClick(this, value);
+});
+
 Then('Admin visualizes {string} page', async function (pageUrl) {
     const currentPage = await this.driver.getUrl();
     assert.isTrue(currentPage.includes(pageUrl));
 });
 
 Then('Admin sees {int} posts', async function (total) {
+    const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
+    const items = await div.$$('div.gh-posts-list-item-group');
+    assert.equal(items.length, total);
+});
+
+Then('Admin sees {int} pages', async function (total) {
     const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
     const items = await div.$$('div.gh-posts-list-item-group');
     assert.equal(items.length, total);

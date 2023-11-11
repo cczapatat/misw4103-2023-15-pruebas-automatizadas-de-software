@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-describe('ghost admins posts scenario 20', () => {
+describe('ghost admins pages scenario 20', () => {
   const site = Cypress.env('site');
   const name = Cypress.env('name');
   const email = Cypress.env('email');
@@ -18,7 +18,7 @@ describe('ghost admins posts scenario 20', () => {
     ///cy.logout();
   });
 
-  context('Given admin accesses post list option', () => {
+  context('Given admin accesses page list option', () => {
     beforeEach(() => {
       cy.listPages();
     });

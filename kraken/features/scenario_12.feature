@@ -16,7 +16,7 @@ Feature: Scenario 12
     And Admin adds tag "cczt" to post
     And I wait for 1 seconds
     And Admin publishes post
-    And I wait for 3 seconds
+    And I wait for 2 seconds
     And Admin navigates to "/posts" page
     And I wait for 2 seconds
     Then Admin sees 1 posts
