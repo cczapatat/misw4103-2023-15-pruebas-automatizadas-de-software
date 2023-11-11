@@ -24,6 +24,57 @@ async function logout(context) {
     await context.driver.url(`${URL_BASE}/signout/`);
 }
 
+async function backToEditorPost(context) {
+    await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
+    
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('editor/post'));
+}
+
+async function backToEditorPage(context) {
+    await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
+    
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('editor/page'));
+}
+
+async function addTagToPost(context, tag) {
+    await selectComponent(context, 'button[title="Settings"]').click();
+    await selectComponent(context, '#tag-input').click()
+    await selectComponent(context, '#tag-input').setValue(tag)
+    await selectComponent(context, `li=${tag}`).click();
+    await selectComponent(context, 'button[title="Settings"]').click();
+}
+
+async function createNewTag(context) {
+    await selectComponent(context, 'span=New tag').click();
+
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('tags/new'));
+}
+
+async function deleteTag(context) {
+    await selectComponent(context, 'span=Delete tag').click();
+    await selectComponent(context, 'span=Delete').click();
+}
+
+async function createTag(context, name, desc) {
+    await selectComponent(context, 'input[id="tag-name"]').setValue(name);
+    await selectComponent(context, 'textarea[id="tag-description"]').setValue(desc);
+    await selectComponent(context, 'span=Save').click();
+}
+
+async function clickFirstTag(context) {
+    const ol = await selectComponent(context, 'ol.tags-list');
+    const items = await ol.$$('li.gh-list-row.gh-tags-list-item');
+
+    const tag = items[0];
+    await tag.click();;
+
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('tags/'));
+}
+
 async function deleteAll(context) {
     await context.driver.url(`${URL_BASE}/settings/labs`);
     await selectComponent(context, `button[data-test-button="delete-all"]`).click();

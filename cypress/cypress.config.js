@@ -5,7 +5,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: 'http://localhost:2368'
+    baseUrl: 'http://localhost:2369'
   },
   projectId:"Ghost E2E tests",
   screenshotsFolder: 'cypress/screenshots',
