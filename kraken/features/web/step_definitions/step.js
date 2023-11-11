@@ -158,6 +158,110 @@ async function setUp(context) {
     await goToDashboard(context);
 }
 
+async function listPages(context) {
+    await context.driver.url(`${URL_BASE}/pages`);
+}
+
+async function listPublishedPages(context) {
+    await context.driver.url(`${URL_BASE}/pages?type=published`);
+}
+
+async function listDraftPages(context) {
+    await context.driver.url(`${URL_BASE}/pages?type=draft`);
+}
+
+async function listScheduledPages(context) {
+    await context.driver.url(`${URL_BASE}/pages?type=scheduled`);
+}
+
+async function listPagesAndCheck(context, page) {
+    const currentPage = await this.driver.getUrl();
+    await context.driver.url(`${URL_BASE}/pages`);
+    assert.isTrue(currentPage.includes('ghost/#/pages'));
+    //check page is displayed
+}
+
+async function newPage(context) {
+    await selectComponent(context, 'span=New page').click();
+}
+
+async function createPage(context, titulo, descripcion) {
+    await selectComponent(context, 'textarea[placeholder="Page title"]').setValue(titulo);
+    wait(1)
+    const element = await selectComponent(context, '.koenig-react-editor')
+    await element.click();
+    wait(1)
+    await element.setValue(descripcion);
+
+}
+
+async function editPage(context, titulo, descripcion) {
+    await selectComponent(context, 'textarea[placeholder="Page title"]').setValue(titulo)
+    const element = await selectComponent(context, '.koenig-react-editor')
+    await element.click();
+    wait(1)
+    await element.clearValue();
+    wait(1)
+    await element.setValue(descripcion);
+
+    await selectComponent(context, 'span=Update').click();
+    await context.driver.url(`${URL_BASE}/pages`);
+}
+
+async function clickFirstPage(context) {
+    const div = await selectComponent(context, 'div.posts-list.gh-list.feature-memberAttribution');
+    const items = await div.$$('div.gh-posts-list-item-group');
+    const pageOne = items[0];
+    await pageOne.click();
+}
+
+async function publishPage(context) {
+    await selectComponent(context, 'span=Publish').click();
+    wait(1)
+    await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
+    wait(1)
+    await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+}
+
+async function schedulePage(context) {
+    await selectComponent(context, 'span=Publish').click();
+    wait(1)
+    await selectComponent(context, 'span=Right now').click();
+    wait(1)
+    await selectComponent(context, 'label=Schedule for later').click();
+    wait(1)
+    await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
+    wait(1)
+    await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+}
+
+async function deletePage(context) {
+    await selectComponent(context, 'button[title="Settings"]').click();
+    wait(1)
+    await selectComponent(context, 'button.gh-btn.gh-btn-outline.gh-btn-icon.gh-btn-fullwidth').click();
+    wait(1)
+    await selectComponent(context, 'span=Delete').click();
+}
+
+async function unschedulePage(context) {
+    await selectComponent(context, 'span=Unschedule').click();
+    wait(1)
+    await selectComponent(context, 'button.gh-revert-to-draft').click();
+}
+
+async function addTagToPage(context, tag) {
+    await selectComponent(context, 'button[title="Settings"]').click();
+    wait(1)
+    await selectComponent(context, '#tag-input').click()
+    wait(1)
+    await selectComponent(context, '#tag-input').setValue(tag)
+    wait(1)
+    await selectComponent(context, `li=${tag}`).click();
+    wait(1)
+    await selectComponent(context, 'button[title="Settings"]').click();
+}
+
+
 Before(async function () {
     await setUp(this);
 });
@@ -198,6 +302,66 @@ When('Admin clicks {int} post', async function (position) {
 
 When('Admin clicks to Unschedule', async function () {
     await unschedulePost(this);
+});
+
+When('Admin list pages', async function () {
+    await listPages(this);
+});
+
+When('Admin filter published pages', async function () {
+    await listPublishedPages(this);
+});
+
+When('Admin filter draft pages', async function () {
+    await listDraftPages(this);
+});
+
+When('Admin filter scheduled pages', async function () {
+    await listScheduledPages(this);
+});
+
+When('Admin list Pages and check', async function () {
+    await listPagesAndCheck(this);
+});
+
+When('Admin click on New Page', async function () {
+    await newPage(this);
+});
+
+When('Admin create a New Page', async function () {
+    let titulo = faker.person.jobTitle()
+    let descripcion = faker.lorem.paragraphs(2)
+    await createPage(this,titulo,descripcion);
+});
+
+When('Admin click the first Page', async function () {
+    await clickFirstPage(this);
+});
+
+When('Admin edit an existing Page', async function () {
+    let titulo = faker.person.jobTitle()
+    let descripcion = faker.lorem.paragraphs(2)
+    await editPage(this,titulo,descripcion);
+});
+
+When('Admin add tag {string} to page', async function (tag) {
+    await addTagToPage(this,tag);
+});
+
+When('Admin schedules page', async function () {
+    await schedulePage(this);
+});
+
+When('Admin clicks to Unschedule page', async function () {
+    await unschedulePage(this);
+});
+
+When('Admin clicks to Publish page', async function () {
+    await publishPage(this);
+});
+
+When('Admin clicks to delete page', async function () {
+    await deletePage(this);
 });
 
 Then('Admin visualizes {string} page', async function (pageUrl) {
