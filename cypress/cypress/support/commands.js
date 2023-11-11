@@ -261,24 +261,6 @@ Cypress.Commands.add('filterPagesByTag', tag => {
 })
 
 
-Cypress.Commands.add('filterDraftPost', () => {
-    cy.visit('/ghost/#/posts?type=draft')
-    cy.url().should('include', 'draft')
-    cy.wait(2000)
-})
-
-Cypress.Commands.add('filterScheduledPost', () => {
-    cy.visit('/ghost/#/posts?type=scheduled')
-    cy.url().should('include', 'scheduled')
-    cy.wait(2000)
-})
-
-
-Cypress.Commands.add('filterScheduledPost', () => {
-    cy.visit('/ghost/#/posts?type=published')
-    cy.url().should('include', 'published')
-    cy.wait(2000)
-})
 
 
 Cypress.Commands.add('filterDraftPages', () => {
@@ -410,17 +392,14 @@ Cypress.Commands.add('rigthDeletePost', (postName) => {
     cy.get('li.gh-list-row').first().rightclick()
     cy.wait(1000)
     cy.get('button[type="button"] > span.red').click()
-    cy.screenshot()
-    //rigth-click on the post
-
 })
 
 Cypress.Commands.add('filterDraftPost', () => {
     cy.visit('/ghost/#/posts?type=draft')
     cy.url().should('include', 'draft')
     cy.wait(2000)
-    cy.screenshot()
 })
+
 
 Cypress.Commands.add('filterScheduledPost', () => {
     cy.goToDashboard();
@@ -428,14 +407,12 @@ Cypress.Commands.add('filterScheduledPost', () => {
     cy.wait(1000);
     cy.url().should('include', 'scheduled')
     cy.wait(2000)
-    cy.screenshot()
 })
 
 Cypress.Commands.add('filterPublishedPost', () => {
     cy.visit('/ghost/#/posts?type=published')
     cy.url().should('include', 'published')
-    cy.wait(2000)
-    cy.screenshot()
+    cy.wait(2000)    
 })
 
 Cypress.Commands.add('filterOldestPost', () => {
