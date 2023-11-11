@@ -1,4 +1,4 @@
-Feature: Scenario 7
+Feature: Scenario 8
 
   @user1 @web
   Scenario: Admin creates a new draft post, list posts, list draft posts, edit post and scheduled, publish post, list posts

@@ -26,23 +26,27 @@ async function logout(context) {
 
 async function backToEditorPost(context) {
     await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
-    
+
     const currentPage = await context.driver.getUrl();
     assert.isTrue(currentPage.includes('editor/post'));
 }
 
 async function backToEditorPage(context) {
     await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
-    
+
     const currentPage = await context.driver.getUrl();
     assert.isTrue(currentPage.includes('editor/page'));
 }
 
 async function addTagToPost(context, tag) {
     await selectComponent(context, 'button[title="Settings"]').click();
+    await wait(1);
     await selectComponent(context, '#tag-input').click()
+    await wait(1);
     await selectComponent(context, '#tag-input').setValue(tag)
+    await wait(1);
     await selectComponent(context, `li=${tag}`).click();
+    await wait(1);
     await selectComponent(context, 'button[title="Settings"]').click();
 }
 
@@ -60,7 +64,9 @@ async function deleteTag(context) {
 
 async function createTag(context, name, desc) {
     await selectComponent(context, 'input[id="tag-name"]').setValue(name);
+    await wait(1);
     await selectComponent(context, 'textarea[id="tag-description"]').setValue(desc);
+    await wait(1);
     await selectComponent(context, 'span=Save').click();
 }
 
@@ -289,6 +295,10 @@ When('Admin creates new Post', async function () {
     await createPost(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
 });
 
+When('Admin publishes post', async function () {
+    await publishPost(this);
+});
+
 When('Admin schedules post', async function () {
     await schedulePost(this);
 });
@@ -331,7 +341,7 @@ When('Admin click on New Page', async function () {
 When('Admin create a New Page', async function () {
     let titulo = faker.person.jobTitle()
     let descripcion = faker.lorem.paragraphs(2)
-    await createPage(this,titulo,descripcion);
+    await createPage(this, titulo, descripcion);
 });
 
 When('Admin click the first Page', async function () {
@@ -341,11 +351,11 @@ When('Admin click the first Page', async function () {
 When('Admin edit an existing Page', async function () {
     let titulo = faker.person.jobTitle()
     let descripcion = faker.lorem.paragraphs(2)
-    await editPage(this,titulo,descripcion);
+    await editPage(this, titulo, descripcion);
 });
 
 When('Admin add tag {string} to page', async function (tag) {
-    await addTagToPage(this,tag);
+    await addTagToPage(this, tag);
 });
 
 When('Admin schedules page', async function () {
@@ -362,6 +372,22 @@ When('Admin clicks to Publish page', async function () {
 
 When('Admin clicks to delete page', async function () {
     await deletePage(this);
+});
+
+When('Admin clicks to new Tag', async function () {
+    await createNewTag(this);
+});
+
+When('Admin creates new Tag', async function () {
+    await createTag(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
+});
+
+When('Admin creates new Tag with {string}', async function (tag) {
+    await createTag(this, tag, faker.lorem.paragraph(2));
+});
+
+When('Admin adds tag {string} to post', async function (tag) {
+    await addTagToPost(this, tag);
 });
 
 Then('Admin visualizes {string} page', async function (pageUrl) {

@@ -19,6 +19,6 @@ Feature: Scenario 7
     And Admin navigates to "/posts" page
     And I wait for 3 seconds
     Then Admin sees 1 posts
-    And Admin navigates to "/posts?type=scheduled" page
+    When Admin navigates to "/posts?type=scheduled" page
     And I wait for 3 seconds
     Then Admin sees 0 posts
