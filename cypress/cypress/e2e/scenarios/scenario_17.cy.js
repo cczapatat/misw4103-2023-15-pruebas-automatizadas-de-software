@@ -18,12 +18,12 @@ describe('ghost admins posts scenario 17', () => {
     cy.logout();
   });
 
-  context('Given admin accesses post list option', () => {
+  context('Given admin accesses page list option', () => {
     beforeEach(() => {
       cy.listPages()
     });
 
-    context('When admin create a new post', () => {
+    context('When admin create a new page', () => {
       beforeEach(() => {
         const title = faker.person.jobTitle();
         const description = faker.lorem.paragraph(2);
@@ -34,7 +34,7 @@ describe('ghost admins posts scenario 17', () => {
        
       });
 
-      it('Then admin delete the post', () => {
+      it('Then admin filter by draft', () => {
         cy.filterDraftPages();       
        
         cy.wait(500);

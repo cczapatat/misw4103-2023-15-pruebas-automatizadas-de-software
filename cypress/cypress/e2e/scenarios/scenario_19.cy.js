@@ -18,12 +18,12 @@ describe('ghost admins posts scenario 19', () => {
     cy.logout();
   });
 
-  context('Given admin accesses post list option', () => {
+  context('Given admin accesses to tags', () => {
     beforeEach(() => {
       cy.listTags();
     });
 
-    context('When admin create a new post with tag, list tags, new tag, validate tag, create post, publish post, list post', () => {
+    context('When admin create a new post with tag, list tags, new tag, validate tag, create page, publish page, list page', () => {
       let titleTag;
 
       beforeEach(() => {
@@ -46,7 +46,7 @@ describe('ghost admins posts scenario 19', () => {
         cy.listPagesAndCheck(title);
       });
 
-      it('Then admin sees one post from list post by tag', () => {
+      it('Then admin sees one page from list page by tag', () => {
         cy.filterPagesByTag(titleTag);
         cy.get('li.gh-list-row').then(($post) => {
           expect($post.length).to.equal(1);
