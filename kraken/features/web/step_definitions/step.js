@@ -164,6 +164,10 @@ async function setUp(context) {
     await goToDashboard(context);
 }
 
+async function listPublishedPosts(context) {
+    await context.driver.url(`${URL_BASE}/posts?type=published`);
+}
+
 async function listPages(context) {
     await context.driver.url(`${URL_BASE}/pages`);
 }
@@ -185,6 +189,10 @@ async function listPagesAndCheck(context, page) {
     await context.driver.url(`${URL_BASE}/pages`);
     assert.isTrue(currentPage.includes('ghost/#/pages'));
     //check page is displayed
+}
+
+async function listDraftPosts(context) {
+    await context.driver.url(`${URL_BASE}/posts?type=draft`);
 }
 
 async function newPage(context) {
@@ -366,12 +374,25 @@ When('Admin clicks to Unschedule page', async function () {
     await unschedulePage(this);
 });
 
+
+When('Admin filter draft post', async function () {
+    await listDraftPosts(this);
+});
+
 When('Admin clicks to Publish page', async function () {
     await publishPage(this);
 });
 
 When('Admin clicks to delete page', async function () {
     await deletePage(this);
+});
+
+When('Admin clicks to delete post', async function () {
+    await deletePost(this);
+});
+
+When('Admin filter published posts', async function () {
+    await listPublishedPosts(this);
 });
 
 When('Admin clicks to new Tag', async function () {

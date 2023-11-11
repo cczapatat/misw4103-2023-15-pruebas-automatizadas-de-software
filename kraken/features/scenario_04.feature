@@ -1,9 +1,9 @@
-Feature: Scenario 3
+Feature: Scenario 4
 
-    #login, agregar post, publicar,listar post, filtrar, eliminar, filtrar
+    #login, agregar post, listar post, listar Draft
 
     @user1 @web
-    Scenario: Deleted post
+    Scenario: View draft post
         Given Admin starts app
             When Admin navigates to "/posts" page
                 And I wait for 5 seconds
@@ -17,10 +17,6 @@ Feature: Scenario 3
                 And Admin navigates to "/posts" page
                 And I wait for 3 seconds
             Then Admin sees 1 posts
-            When Admin filter published posts
-                And I wait for 3 seconds
-                And Admin clicks 1 post
-                And I wait for 3 seconds
-                And Admin clicks to delete post
-                And I wait for 3 seconds
-            Then Admin sees 0 posts
+            When Admin filter draft post
+                 And I wait for 3 seconds
+            Then Admin sees 1 posts
