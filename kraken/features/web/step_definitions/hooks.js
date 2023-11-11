@@ -4,7 +4,8 @@ const { WebClient } = require('kraken-node');
 Before(async function() {
   this.deviceClient = new WebClient('chrome', {}, this.userId);
   this.driver = await this.deviceClient.startKrakenForUserId(this.userId);
-})
+  console.log('1111');
+});
 
 After(async function() {
   await this.deviceClient.stopKrakenForUserId(this.userId);
