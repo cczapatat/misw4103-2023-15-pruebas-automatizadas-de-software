@@ -2,7 +2,7 @@ const { assert, expect } = require('chai');
 const { faker } = require('@faker-js/faker');
 const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 
-const URL_BASE = 'http://localhost:2368/ghost/#';
+const URL_BASE = 'http://localhost:2369/ghost/#';
 
 function selectComponent(context, componentDetails) {
     context.driver.$(componentDetails).waitForExist(5000);
@@ -20,6 +20,56 @@ async function login(context) {
 
 async function logout(context) {
     await context.driver.url(`${URL_BASE}/signout/`);
+}
+
+async function backToEditorPage(context) {
+    await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
+    
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('editor/post'));
+}
+
+async function backToEditorPage(context) {
+    await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
+    
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('editor/page'));
+}
+
+async function addTagToPost(context, tag) {
+    await selectComponent(context, 'button[title="Settings"]').click();
+    await selectComponent(context, '#tag-input ul:first > input.ember-power-select-trigger-multiple-input').setValue(tag)
+    await selectComponent(context, `li=${value}`).click();
+    await selectComponent(context, 'button[title="Settings"]').click();
+}
+
+async function createNewTag(context) {
+    await selectComponent(context, 'span=New tag').click();
+
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('tags/new'));
+}
+
+async function deleteTag(context) {
+    await selectComponent(context, 'span=Delete tag').click();
+    await selectComponent(context, 'span=Delete').click();
+}
+
+async function createTag(context, name, desc) {
+    await selectComponent(context, 'input[id="tag-name"]').setValue(name);
+    await selectComponent(context, 'textarea[id="tag-description"]').setValue(desc);
+    await selectComponent(context, 'span=Save').click();
+}
+
+async function clickFirstTag(context) {
+    const ol = await selectComponent(context, 'ol.tags-list');
+    const items = await ol.$$('li.gh-list-row.gh-tags-list-item');
+
+    const tag = items[0];
+    await tag.click();;
+
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('tags/'));
 }
 
 async function deleteAll(context) {
@@ -143,4 +193,13 @@ Then('Admin sees {int} posts', async function (total) {
     const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
     const items = await div.$$('div.gh-posts-list-item-group');
     assert.equal(items.length, total);
+});
+
+When('Admin proof a test command', async function() {
+    await createNewTag(this);
+    await createTag(this, 'name', 'desc');
+});
+
+When ('Admin proof a test command2', async function() {
+    await clickFirstTag(this);
 });
