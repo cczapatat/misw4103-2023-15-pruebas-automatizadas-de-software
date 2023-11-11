@@ -189,7 +189,7 @@ Cypress.Commands.add('deletePage', () => {
     cy.screenshot()
     cy.wait(2000)
     cy.get('.gh-btn.gh-btn-red.gh-btn-icon.ember-view').children().contains('Delete').click()
-    cy.wait(2000)
+    cy.wait(2000)   
     // cy.get('.modal-footer .gh-btn:not(:first-child)').click()
 })
 
@@ -213,6 +213,14 @@ Cypress.Commands.add('schedulePage', () => {
     cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click();
     cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
     cy.wait(1000);
+})
+
+Cypress.Commands.add('listPagesAndCheck', (post) => {
+    cy.wait(1000)
+    cy.visit('/ghost/#/pages/')
+    cy.url().should('include', 'pages')
+    cy.contains(post)
+    cy.screenshot()
 })
 
 Cypress.Commands.add('publishPage', () => {
@@ -243,6 +251,35 @@ Cypress.Commands.add('featurePage', (excerpt) => {
     cy.wait(2000)
     cy.screenshot()
 })
+
+Cypress.Commands.add('filterPagesByTag', tag => {
+    cy.goToDashboard();
+    cy.visit(`/ghost/#/pages?tag=${tag}`);
+    cy.wait(1000);
+    cy.url().should('include', `tag=${tag}`);
+    cy.wait(500);
+})
+
+
+Cypress.Commands.add('filterDraftPost', () => {
+    cy.visit('/ghost/#/posts?type=draft')
+    cy.url().should('include', 'draft')
+    cy.wait(2000)
+})
+
+Cypress.Commands.add('filterScheduledPost', () => {
+    cy.visit('/ghost/#/posts?type=scheduled')
+    cy.url().should('include', 'scheduled')
+    cy.wait(2000)
+})
+
+
+Cypress.Commands.add('filterScheduledPost', () => {
+    cy.visit('/ghost/#/posts?type=published')
+    cy.url().should('include', 'published')
+    cy.wait(2000)
+})
+
 
 Cypress.Commands.add('filterDraftPages', () => {
     cy.visit('/ghost/#/pages?type=draft')
@@ -366,10 +403,23 @@ Cypress.Commands.add('publishPost', () => {
     cy.wait(1000)
 })
 
+
+Cypress.Commands.add('rigthDeletePost', (postName) => {
+    cy.visit('ghost/#/posts')
+    cy.url().should('include', 'posts')
+    cy.get('li.gh-list-row').first().rightclick()
+    cy.wait(1000)
+    cy.get('button[type="button"] > span.red').click()
+    cy.screenshot()
+    //rigth-click on the post
+
+})
+
 Cypress.Commands.add('filterDraftPost', () => {
     cy.visit('/ghost/#/posts?type=draft')
     cy.url().should('include', 'draft')
     cy.wait(2000)
+    cy.screenshot()
 })
 
 Cypress.Commands.add('filterScheduledPost', () => {
@@ -378,12 +428,14 @@ Cypress.Commands.add('filterScheduledPost', () => {
     cy.wait(1000);
     cy.url().should('include', 'scheduled')
     cy.wait(2000)
+    cy.screenshot()
 })
 
 Cypress.Commands.add('filterPublishedPost', () => {
     cy.visit('/ghost/#/posts?type=published')
     cy.url().should('include', 'published')
     cy.wait(2000)
+    cy.screenshot()
 })
 
 Cypress.Commands.add('filterOldestPost', () => {
@@ -435,12 +487,6 @@ Cypress.Commands.add('backToEditor', () => {
     cy.screenshot()
 })
 
-Cypress.Commands.add('backToEditorPage', () => {
-    cy.get('button.gh-btn-editor.gh-publish-back-button').click()
-    cy.wait(2000)
-    cy.url().should('include', 'editor/page')
-    cy.screenshot()
-})
 
 Cypress.Commands.add('addTagToPost', (tag) => {
     cy.get('button[title="Settings"]').click();
@@ -450,6 +496,24 @@ Cypress.Commands.add('addTagToPost', (tag) => {
     cy.get('button[title="Settings"]').click();
     cy.wait(500);
 });
+
+Cypress.Commands.add('backToEditorPage', () => {
+    cy.get('button.gh-btn-editor.gh-publish-back-button').click()
+    cy.wait(2000)
+    cy.url().should('include', 'editor/page')
+    cy.screenshot()
+})
+
+Cypress.Commands.add('addTagToPage', (tag) => {
+    cy.get('button[title="Settings"]').click();
+    cy.wait(500);
+    cy.get('#tag-input ul:first > input.ember-power-select-trigger-multiple-input').type(`${tag}{enter}`);
+    cy.screenshot();
+    cy.get('button[title="Settings"]').click();
+    cy.wait(500);
+});
+
+
 
 Cypress.Commands.add('deleteTag', () => {
     cy.get('button[data-test-button="delete-tag"]').click() 
@@ -509,6 +573,12 @@ Cypress.Commands.add('filterInternalTags', () => {
 Cypress.Commands.add('clickLeaveButton', () => {
     cy.contains('Leave').click({ force: true})
     cy.wait(2000)
+})
+
+
+Cypress.Commands.add('ConfirmDeleteDialog', () => {
+    cy.get('button[data-test-button="confirm"]').contains('Delete').click({force: true});
+    cy.wait(2000);
 })
 
 Cypress.Commands.add('deleteAll', () => {
