@@ -25,10 +25,8 @@ async function logout(context) {
 }
 
 async function backToEditorPost(context) {
-    await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
-
-    const currentPage = await context.driver.getUrl();
-    assert.isTrue(currentPage.includes('editor/post'));
+    await selectComponent(context, `[data-test-button='close-publish-flow']`).click();
+    wait(1)
 }
 
 async function backToEditorPage(context) {
@@ -60,6 +58,7 @@ async function createNewTag(context) {
 
 async function deleteTag(context) {
     await selectComponent(context, 'span=Delete tag').click();
+    wait(1)
     await selectComponent(context, 'span=Delete').click();
 }
 
@@ -177,6 +176,14 @@ async function listPublishedPosts(context) {
 
 async function listPages(context) {
     await context.driver.url(`${URL_BASE}/pages`);
+}
+
+async function listPosts(context) {
+    await context.driver.url(`${URL_BASE}/posts`);
+}
+
+async function listInternalTags(context) {
+    await context.driver.url(`${URL_BASE}/tags?type=internal`);
 }
 
 async function listPublishedPages(context) {
@@ -328,8 +335,23 @@ When('Admin clicks {int} post', async function (position) {
     await post.click();
 });
 
+When('Admin clicks {int} tag', async function (position) {
+    const ol = await selectComponent(this, 'ol.tags-list.gh-list');
+    const items = await ol.$$('li.gh-tags-list-item');
+    const tag = items[position - 1];
+    await tag.click();
+});
+
 When('Admin clicks to Unschedule', async function () {
     await unschedulePost(this);
+});
+
+When('Admin clicks Back to editor', async function (){
+    await backToEditorPost(this)
+})
+
+When('Admin list posts', async function () {
+    await listPosts(this);
 });
 
 When('Admin list pages', async function () {
@@ -393,6 +415,10 @@ When('Admin filter draft post', async function () {
     await listDraftPosts(this);
 });
 
+When('Admin filter internal tags', async function () {
+    await listInternalTags(this)
+});
+
 When('Admin clicks to Publish page', async function () {
     await publishPage(this);
 });
@@ -417,6 +443,11 @@ When('Admin creates new Tag', async function () {
     await createTag(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
 });
 
+When('Admin delete a Tag', async function () {
+    await deleteTag(this);
+});
+
+
 When('Admin creates new Tag with {string}', async function (tag) {
     await createTag(this, tag, faker.lorem.paragraph(2));
 });
@@ -437,6 +468,12 @@ Then('Admin visualizes {string} page', async function (pageUrl) {
 Then('Admin sees {int} posts', async function (total) {
     const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
     const items = await div.$$('div.gh-posts-list-item-group');
+    assert.equal(items.length, total);
+});
+
+Then('Admin sees {int} tags', async function (total) {
+    const ol = await selectComponent(this, 'ol.tags-list.gh-list');
+    const items = await ol.$$('li.gh-tags-list-item');
     assert.equal(items.length, total);
 });
 
