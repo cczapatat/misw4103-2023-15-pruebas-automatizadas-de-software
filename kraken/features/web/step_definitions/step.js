@@ -4,6 +4,8 @@ const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 
 const URL_BASE = 'http://localhost:2368/ghost/#';
 
+const wait = (ms = 1) => new Promise(resolve => setTimeout(resolve, ms * 1000));
+
 function selectComponent(context, componentDetails) {
     context.driver.$(componentDetails).waitForExist(5000);
     context.driver.$(componentDetails).waitForDisplayed(5000);
@@ -25,7 +27,9 @@ async function logout(context) {
 async function deleteAll(context) {
     await context.driver.url(`${URL_BASE}/settings/labs`);
     await selectComponent(context, `button[data-test-button="delete-all"]`).click();
+    await wait(1);
     await selectComponent(context, `button.gh-btn.gh-btn-red.gh-btn-icon.ember-view`).click();
+    await wait(1);
     await selectComponent(context, `button.gh-alert-close`).click();
 }
 
@@ -35,6 +39,7 @@ async function goToDashboard(context) {
 
 async function searchGlobalAndClick(context) {
     await selectComponent(context, 'button.gh-nav-btn-search').click();
+    await wait(1);
     await selectComponent(context, 'input[name="selectSearchTerm"].gh-input-with-select-input').click();
 }
 
@@ -48,6 +53,7 @@ async function createPost(context, title, description) {
     await selectComponent(context, 'textarea[placeholder="Post title"]').setValue(title);
     const element = await selectComponent(context, '.koenig-react-editor');
     await element.click();
+    await wait(1);
     await element.setValue(description);
 }
 
@@ -55,23 +61,31 @@ async function editPost(context, title, description) {
     await selectComponent(context, 'textarea[placeholder="Post title"]').setValue(title);
     const element = await selectComponent(context, '.koenig-react-editor');
     await element.click();
+    await wait(1);
     await element.setValue(description);
 
     await selectComponent(context, 'span=Update').click();
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-publishmenu-button.gh-btn-icon.ember-view').click();
 }
 
 async function publishPost(context) {
     await selectComponent(context, 'span=Publish').click();
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
 }
 
 async function schedulePost(context) {
     await selectComponent(context, 'span=Publish').click();
+    await wait(1);
     await selectComponent(context, 'span=Right now').click();
+    await wait(1);
     await selectComponent(context, 'label=Schedule for later').click();
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
+    await wait(1);
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
 }
 
@@ -83,6 +97,7 @@ async function deletePost(context) {
 
 async function unschedulePost(context) {
     await selectComponent(context, 'span=Unschedule').click();
+    await wait(1);
     await selectComponent(context, 'button.gh-revert-to-draft').click();
 }
 
