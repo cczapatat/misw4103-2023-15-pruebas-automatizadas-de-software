@@ -9,6 +9,10 @@
 | Juan Carlos Torres | jc.torresm1@uniandes.edu.co | @jctorresm1 |
 | Cristian Camilo Zapata Torres | c.zapatat@uniandes.edu.co | @cczapatat |
 
+## Evidencias Reportes
+
+[Link](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EnUNGiY18TlHggg4oBkc2o0B9Ac1OewDzjArNLharPirXg?e=aVX2by)
+
 ## Instrucciones
 
 A continuación se mencionaran pasos, requisitos y consideraciones importantes para correr los escenarios de prueba de los diferentes proyectos en Kraken y Cypress.
@@ -52,6 +56,8 @@ ghost ls
 ```sh
 http://localhost:2368/ghost
 ```
+
+* Utilice esta misma URL y ajustela en los archivos de configuración de cada proyectos *cypress.config.js* y *kraken.config.js*
 
 * Si es la primer vez que ingresa se le solicitará crear un administrador, importante crear el administrador con los siguientes datos, ya que estos son los datos con los que se ejecutan los escenarios. *Si ya tiene un administrador creado debera cambiar las credenciales en los archivos de configuración de cada proyecto*
 
