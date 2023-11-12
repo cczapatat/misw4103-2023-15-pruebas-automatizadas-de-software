@@ -2,7 +2,7 @@ const { assert, expect } = require('chai');
 const { faker } = require('@faker-js/faker');
 const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 
-const URL_BASE = 'http://localhost:2369/ghost/#';
+const URL_BASE = 'http://localhost:2368/ghost/#';
 
 const wait = (ms = 1) => new Promise(resolve => setTimeout(resolve, ms * 1000));
 
