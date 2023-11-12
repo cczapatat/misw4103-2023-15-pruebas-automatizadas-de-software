@@ -19,8 +19,8 @@ describe('ghost admin posts scenario 6', () => {
     }) 
 
 	after(()=>{
-        cy.deleteAll()
-		cy.logout() 
+        cy.goToDashboard();
+		cy.logout();
 	})  
 
 	context('Given admin accesses post list option', () => {

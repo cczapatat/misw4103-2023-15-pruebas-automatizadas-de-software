@@ -14,7 +14,7 @@ describe('ghost admins posts scenario 3', () => {
   });
 
   after(() => {  
-    cy.deleteAll();
+    cy.goToDashboard();
     cy.logout();
   });
 
