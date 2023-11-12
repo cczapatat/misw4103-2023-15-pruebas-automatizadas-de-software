@@ -1,8 +1,10 @@
-const { assert, expect } = require('chai');
+const { assert } = require('chai');
 const { faker } = require('@faker-js/faker');
 const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 
-const URL_BASE = 'http://localhost:2368/ghost/#';
+const configProperties = require('../../../kraken.config');
+
+const URL_BASE = `${configProperties.env.baseUrl}/ghost/#`;
 
 const wait = (ms = 1) => new Promise(resolve => setTimeout(resolve, ms * 1000));
 
@@ -15,8 +17,8 @@ function selectComponent(context, componentDetails) {
 
 async function login(context) {
     await context.driver.url(`${URL_BASE}/signin/`);
-    await selectComponent(context, '.gh-input.email').setValue('admin@email.com');
-    await selectComponent(context, '.gh-input.password').setValue('pruebasE2E');
+    await selectComponent(context, '.gh-input.email').setValue(configProperties.env.email);
+    await selectComponent(context, '.gh-input.password').setValue(configProperties.env.password);
     await selectComponent(context, `[data-test-button='sign-in']`).click();
 }
 

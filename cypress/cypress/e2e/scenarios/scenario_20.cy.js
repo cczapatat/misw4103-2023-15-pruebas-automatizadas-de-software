@@ -14,8 +14,8 @@ describe('ghost admins pages scenario 20', () => {
   });
 
   after(() => {
-    //cy.deleteAll();
-    ///cy.logout();
+    cy.goToDashboard();
+    cy.logout();
   });
 
   context('Given admin accesses page list option', () => {

@@ -18,8 +18,8 @@ describe('ghost admin tags scenario 13', () => {
     }) 
 
 	after(()=>{
-        cy.deleteAll()
-		cy.logout() 
+        cy.goToDashboard();
+		cy.logout();
 	})  
 
 	context('Given admin accesses tag list option', () => {
