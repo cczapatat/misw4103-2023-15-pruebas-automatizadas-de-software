@@ -14,7 +14,7 @@ describe('ghost admins pages scenario 18', () => {
   });
 
   after(() => {
-    cy.deleteAll();
+    cy.goToDashboard();
     cy.logout();
   });
 

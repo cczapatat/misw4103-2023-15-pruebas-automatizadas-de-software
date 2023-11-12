@@ -12,7 +12,7 @@ describe('ghost admins page scenario 14', () => {
   });
 
   after(() => {
-    cy.deleteAll();
+    cy.goToDashboard();
     cy.logout();
   });
 
