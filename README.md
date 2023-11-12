@@ -217,6 +217,11 @@ Si esta en una terminal windows, puede ejecutar:
 ```bash
 npm run krakenwin
 ```
+**Para la ejecución de multiples archivos scenario_X.feature en WINDOWS se DEBE ejecutar el siguiente commando que actualiza los nombres de los archivos .feature y se ejecute el commando krakenwin por cada archivo .feature. Si se presenta algún error o cancela el comando, los archivos quedaran renombrados con .featured y sera necesario renombrarlos a su nombre inicial**
+
+```bash
+npm run krakenwinmulti
+```
 
 Además puede ejecutar, en cualquier tipo de terminal:
 
