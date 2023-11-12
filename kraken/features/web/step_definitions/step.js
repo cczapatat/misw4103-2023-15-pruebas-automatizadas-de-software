@@ -184,6 +184,10 @@ async function listPosts(context) {
     await context.driver.url(`${URL_BASE}/posts`);
 }
 
+async function listTags(context) {
+    await context.driver.url(`${URL_BASE}/tags`);
+}
+
 async function listInternalTags(context) {
     await context.driver.url(`${URL_BASE}/tags?type=internal`);
 }
@@ -295,6 +299,15 @@ async function addTagToPage(context, tag) {
     await wait(1);
 }
 
+async function publishTag(context) {
+    await selectComponent(context, 'span=Publish').click();
+    await wait(1);
+    await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
+    await wait(1);
+    await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+    await wait(1);
+}
+
 Before(async function () {
     await setUp(this);
 });
@@ -320,6 +333,11 @@ When('Admin clicks to new Post', async function () {
 
 When('Admin creates new Post', async function () {
     await createPost(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
+});
+
+
+When('Admin publishes tag', async function () {
+    await publishTag(this);
 });
 
 When('Admin publishes post', async function () {
@@ -417,8 +435,8 @@ When('Admin filter draft post', async function () {
     await listDraftPosts(this);
 });
 
-When('Admin filter internal tags', async function () {
-    await listInternalTags(this)
+When('Admin filter tags', async function () {
+    await listTags(this)
 });
 
 When('Admin clicks to Publish page', async function () {
@@ -455,6 +473,11 @@ When('Admin creates new Tag with {string}', async function (tag) {
 });
 
 When('Admin adds tag {string} to post', async function (tag) {
+    await addTagToPost(this, tag);
+});
+
+
+When('Admin adds tag {string} to tag', async function (tag) {
     await addTagToPost(this, tag);
 });
 
