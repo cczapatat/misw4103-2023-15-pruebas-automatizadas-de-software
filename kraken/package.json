@@ -1,7 +1,8 @@
 {
   "scripts": {
     "krakenos": "./node_modules/.bin/kraken-node run",
-    "krakenwin": ".\\node_modules\\.bin\\kraken-node run"
+    "krakenwin": ".\\node_modules\\.bin\\kraken-node run",
+    "krakenwinmulti": "node runwinkraken.js"
   },
   "dependencies": {
     "@faker-js/faker": "^8.2.0",

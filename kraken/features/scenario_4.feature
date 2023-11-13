@@ -10,13 +10,10 @@ Feature: Scenario 4
             Then Admin visualizes "/posts" page
                 And I wait for 1 seconds
                 And Admin clicks to new Post
-                And Admin creates new Post
-                And I wait for 5 seconds
-            When Admin publishes post
+                And Admin creates new Post                
                 And I wait for 3 seconds
                 And Admin navigates to "/posts" page
+                And I wait for 3 seconds           
+                And Admin filter draft post
                 And I wait for 3 seconds
-            Then Admin sees 1 posts
-            When Admin filter draft post
-                 And I wait for 3 seconds
             Then Admin sees 1 posts

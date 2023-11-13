@@ -9,6 +9,10 @@
 | Juan Carlos Torres | jc.torresm1@uniandes.edu.co | @jctorresm1 |
 | Cristian Camilo Zapata Torres | c.zapatat@uniandes.edu.co | @cczapatat |
 
+## Evidencias Reportes
+
+[Link](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EnUNGiY18TlHggg4oBkc2o0B9Ac1OewDzjArNLharPirXg?e=aVX2by)
+
 ## Instrucciones
 
 A continuación se mencionaran pasos, requisitos y consideraciones importantes para correr los escenarios de prueba de los diferentes proyectos en Kraken y Cypress.
@@ -52,6 +56,8 @@ ghost ls
 ```sh
 http://localhost:2368/ghost
 ```
+
+* Utilice esta misma URL y ajustela en los archivos de configuración de cada proyectos *cypress.config.js* y *kraken.config.js*
 
 * Si es la primer vez que ingresa se le solicitará crear un administrador, importante crear el administrador con los siguientes datos, ya que estos son los datos con los que se ejecutan los escenarios. *Si ya tiene un administrador creado debera cambiar las credenciales en los archivos de configuración de cada proyecto*
 
@@ -204,8 +210,17 @@ npm run krakenos
 
 Si esta en una terminal windows, puede ejecutar:
 
+##### Consideraciones
+
+**Para la ejecución en windows dentro de la carpeta features solo se debe tener un archivo con extensión .feature, y solo un feature dentro del mismo archivo**
+
 ```bash
 npm run krakenwin
+```
+**Para la ejecución de multiples archivos scenario_X.feature en WINDOWS se DEBE ejecutar el siguiente commando que actualiza los nombres de los archivos .feature y se ejecute el commando krakenwin por cada archivo .feature. Si se presenta algún error o cancela el comando, los archivos quedaran renombrados con .featured y sera necesario renombrarlos a su nombre inicial**
+
+```bash
+npm run krakenwinmulti
 ```
 
 Además puede ejecutar, en cualquier tipo de terminal:
