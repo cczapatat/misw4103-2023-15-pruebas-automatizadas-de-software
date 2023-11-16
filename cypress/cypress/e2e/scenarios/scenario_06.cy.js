@@ -39,9 +39,7 @@ describe('ghost admin posts scenario 6', () => {
                 cy.createPost(titulo, descripcion)
                 cy.listPostAndCheck(titulo);
                 cy.filterDraftPost();
-                cy.get('li.gh-list-row').then(($post)=>{
-                    expect($post.length).to.equal(1)
-                });
+                cy.checkFirstPost();
                 cy.clickFirstPost();
                 cy.publishPost()
                 cy.wait(1000);
@@ -50,8 +48,7 @@ describe('ghost admin posts scenario 6', () => {
             it('Then admin sees empty draft list', () => {
                 cy.filterDraftPost();
                 cy.wait(1000);
-                cy.get('li.gh-list-row').should('not.exist');
-                cy.screenshot();
+                cy.testDraftPageNotExist();
             }) 
         })	
 	})

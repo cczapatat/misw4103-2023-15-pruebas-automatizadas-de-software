@@ -44,8 +44,7 @@ describe('ghost admin tags scenario 13', () => {
             it('Then admin sees empty Tag list', () => {
                 cy.listTags();
                 cy.wait(1000);
-                cy.get('li.gh-list-row.gh-tags-list-item').should('not.exist');
-                cy.contains("Create a new tag")
+                cy.testTagNotExist();
                 cy.wait(1000);
                 cy.screenshot();
             }) 

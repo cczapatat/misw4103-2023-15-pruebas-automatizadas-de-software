@@ -45,8 +45,7 @@ describe('ghost admin posts scenario 9', () => {
             it('Then admin sees empty Post list', () => {
                 cy.listPost();
                 cy.wait(1000);
-                cy.get('li.gh-list-row').should('not.exist');
-                cy.screenshot();
+                cy.testEmptyPostList();
             }) 
         })	
 	})
