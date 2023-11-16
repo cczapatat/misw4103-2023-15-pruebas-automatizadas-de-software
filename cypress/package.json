@@ -2,5 +2,11 @@
   "dependencies": {
     "@faker-js/faker": "^8.2.0",
     "cypress": "^13.3.0"
+  },
+  "scripts": {
+    "cypressos:new": "VERSION=5.68.0 cypress open",
+    "cypressos:old": "VERSION=5.8.0 cypress open",
+    "cypresswin:new": "set VERSION=5.68.0 && cypress open",
+    "cypresswin:old": "set VERSION=5.8.0 && cypress open"
   }
 }

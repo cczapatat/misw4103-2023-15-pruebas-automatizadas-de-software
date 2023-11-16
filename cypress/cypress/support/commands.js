@@ -23,6 +23,9 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+const {validateVersion} = require("../../utils")
+
 Cypress.Commands.add('createAdmin', (site, name, email, password) => {
     cy.visit('/ghost/')
     cy.wait(1000)
