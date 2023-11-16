@@ -9,10 +9,9 @@ describe('ghost admin posts scenario 6', () => {
 	const password = Cypress.env('password')
 	let titulo = new String();
 	let descripcion = new String();
-	
 
     before(()=>{
-		cy.createAdmin(site, name, email, password);
+        cy.start('scenario_6');
         cy.login(email, password);
         cy.deleteAll();
         cy.goToDashboard();

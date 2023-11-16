@@ -11,7 +11,7 @@ describe('ghost admin tags scenario 13', () => {
     let desc = new String();
 
     before(()=>{
-		cy.createAdmin(site, name, email, password)
+        cy.start('scenario_13');
         cy.login(email, password)
         cy.deleteAll();
         cy.goToDashboard();
@@ -45,8 +45,6 @@ describe('ghost admin tags scenario 13', () => {
                 cy.listTags();
                 cy.wait(1000);
                 cy.testTagNotExist();
-                cy.wait(1000);
-                cy.screenshot();
             }) 
         })	
 	})

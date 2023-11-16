@@ -12,7 +12,7 @@ describe('ghost admin posts scenario 9', () => {
 	
 
     before(()=>{
-		cy.createAdmin(site, name, email, password)
+        cy.start('scenario_9');
         cy.login(email, password)
         cy.deleteAll();
         cy.goToDashboard();
