@@ -11,7 +11,7 @@ describe('ghost admin tags scenario 11', () => {
     let desc = new String();
 
     before(()=>{
-		cy.createAdmin(site, name, email, password)
+        cy.start('scenario_11');
         cy.login(email, password)
         cy.deleteAll();
         cy.goToDashboard();
@@ -42,10 +42,7 @@ describe('ghost admin tags scenario 11', () => {
             it('Then admin sees Tag with Internal state', () => {
                 cy.filterInternalTags();
                 cy.wait(1000);
-                cy.get('li.gh-list-row.gh-tags-list-item').then(($tags)=>{
-                    expect($tags.length).to.equal(1)
-                });
-                cy.screenshot();
+                cy.testFirstTagExist();
             }) 
         })	
 	})
