@@ -85,7 +85,7 @@ Cypress.Commands.add('listPages', () => {
     cy.visit('/ghost/#/pages/');
     cy.url().should('include', 'pages');
     cy.wait(1000);
-    cy.screenshot();
+    cy.screenshot(getNamePhoto());
 })
 
 Cypress.Commands.add('listPagesAndCheck', (page) => {
@@ -101,14 +101,16 @@ Cypress.Commands.add('newPage', () => {
     cy.contains('New page').click();
     cy.wait(1000);
     cy.url().should('include', 'editor/page');
-    cy.screenshot();
+    cy.screenshot(getNamePhoto());
 })
 
 Cypress.Commands.add('createPage', (title, description) => {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
+
     cy.get('textarea[placeholder="Page title"]').type(title)
-    cy.get('.koenig-react-editor').type(description +'{enter}')
+    cy.get(descriptionFieldName).type(description +'{enter}')
     cy.wait(2000)
-    cy.screenshot()
+    cy.screenshot(getNamePhoto())
 })
 
 Cypress.Commands.add('editPage', (title, description) => {
@@ -218,7 +220,7 @@ Cypress.Commands.add('listPagesAndCheck', (post) => {
 Cypress.Commands.add('publishPage', () => {
     cy.wait(500);
     cy.contains('Publish').click()
-    cy.screenshot()
+    cy.screenshot(getNamePhoto())
     cy.wait(2000)
 	cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click()
 	cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click()	
@@ -308,7 +310,7 @@ Cypress.Commands.add('listPost', () => {
     cy.visit('/ghost/#/posts/')
     cy.url().should('include', 'posts')
     cy.wait(1000)
-    cy.screenshot()
+    cy.screenshot(getNamePhoto())
 })
 
 Cypress.Commands.add('newPost', () => {
@@ -316,7 +318,7 @@ Cypress.Commands.add('newPost', () => {
     cy.contains('New post').click()
     cy.wait(2000)
     cy.url().should('include', 'editor/post')
-    cy.screenshot()	
+    cy.screenshot(getNamePhoto())	
 })
 
 Cypress.Commands.add('clickFirstPost', () => {
@@ -328,10 +330,12 @@ Cypress.Commands.add('clickFirstPost', () => {
 })
 
 Cypress.Commands.add('createPost', (title, description) => {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
+
     cy.get('textarea[placeholder="Post title"]').type(title)
-    cy.get('.koenig-react-editor').type(description +'{enter}')
+    cy.get(descriptionFieldName).type(description +'{enter}')
     cy.wait(1000)
-    cy.screenshot()
+    cy.screenshot(getNamePhoto())
 })
 
 Cypress.Commands.add('listPostAndCheck', (post) => {
@@ -345,7 +349,7 @@ Cypress.Commands.add('listPostAndCheck', (post) => {
 Cypress.Commands.add('schedulePost', () => {
     cy.wait(500);
     cy.contains('Publish').click();
-    cy.screenshot();
+    cy.screenshot(getNamePhoto());
     cy.wait(500);
     cy.contains('Right now').click();
     cy.wait(500);
@@ -370,12 +374,12 @@ Cypress.Commands.add('unschedulePost', () => {
 Cypress.Commands.add('publishPost', () => {
     cy.wait(2000)
     cy.contains('Publish').click()
-    cy.screenshot()
+    cy.screenshot(getNamePhoto())
     cy.wait(2000)
-	cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click()
-	cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click()
+    	cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click()
+    	cy.get('button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click()
     cy.wait(1000)
-})
+    })
 
 
 Cypress.Commands.add('rigthDeletePost', (postName) => {
@@ -551,18 +555,53 @@ Cypress.Commands.add('ConfirmDeleteDialog', () => {
 })
 
 Cypress.Commands.add('deleteAll', () => {
+    const buttonDeleteName = version ? 'button[data-test-button="delete-all"]' : 'button.gh-btn.gh-btn-red.js-delete'
+
     cy.visit('/ghost/#/settings/labs')
     cy.wait(4000)
-    cy.get('button[data-test-button="delete-all"]').click({force: true});
+    cy.get(buttonDeleteName).click({force: true});
     cy.wait(3000)
     cy.get('button.gh-btn.gh-btn-red.gh-btn-icon.ember-view').click({force: true});
     cy.wait(1000)
     cy.get('button.gh-alert-close').click();
 })
 
-Cypress.Commands.add('validateScenarioOne', () => {
+Cypress.Commands.add('validateNotExistItems', () => {
     cy.wait(500);
-    cy.get('li.gh-list-row').should('not.exist');
+    cy.get('li.gh-list-row.gh-posts-list-item').should('not.exist');
     cy.screenshot(getNamePhoto());
     cy.wait(500);
+})
+
+Cypress.Commands.add('validateQuantityItems', (quantity) => {
+    cy.wait(500);
+    cy.get('li.gh-list-row.gh-posts-list-item').then(($post) => {
+        expect($post.length).to.equal(quantity);
+    });
+    cy.screenshot(getNamePhoto());
+    cy.wait(500);
+})
+
+Cypress.Commands.add('validateScenarioOne', () => {
+    cy.validateNotExistItems()
+})
+
+Cypress.Commands.add('validateScenarioTwo', () => {
+    cy.filterPublishedPost();
+    cy.validateQuantityItems(1)
+})
+
+Cypress.Commands.add('validateScenarioFive', () => {
+    cy.schedulePost();
+    cy.filterScheduledPost();       
+    cy.validateQuantityItems(1)
+})
+
+Cypress.Commands.add('validateScenarioFourteen', () => {
+    cy.validateNotExistItems()
+})
+
+Cypress.Commands.add('validateScenarioFifteen', () => {
+    cy.filterPublishedPages();
+    cy.validateQuantityItems(1)
 })
