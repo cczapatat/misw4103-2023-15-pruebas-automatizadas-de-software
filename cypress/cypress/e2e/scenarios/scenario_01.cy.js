@@ -5,7 +5,7 @@ describe('ghost admins posts scenario 1', () => {
   const password = Cypress.env('password');
 
   before(() => {
-    cy.createAdmin(site, name, email, password);
+    cy.start('scenario_1');
     cy.login(email, password);
     cy.deleteAll();
     cy.goToDashboard();
@@ -23,10 +23,7 @@ describe('ghost admins posts scenario 1', () => {
       });
 
       it('Then admin sees empty post list', () => {
-        cy.wait(500);
-        cy.get('li.gh-list-row').should('not.exist');
-        cy.screenshot();
-        cy.wait(500);
+        cy.validateScenarioOne()
       });
     });
   });
