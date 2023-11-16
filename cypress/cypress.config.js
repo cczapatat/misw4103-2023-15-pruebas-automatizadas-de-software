@@ -1,11 +1,12 @@
 const { defineConfig } = require('cypress');
+const {validateVersion} = require('./utils');
 
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: 'http://localhost:2368'
+    baseUrl: validateVersion() ? 'http://localhost:2368' : 'http://localhost:3100'
   },
   projectId:"Ghost E2E tests",
   screenshotsFolder: 'cypress/screenshots',
@@ -22,6 +23,7 @@ module.exports = defineConfig({
     lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a lacus in sem tempus",
     draftPost: "Cypress Test Post", 
     scheduledPost: "Cypress Test Post Scheduled", 
-    publishedPost: "Cypress Test Post Published"
+    publishedPost: "Cypress Test Post Published",
+    version: validateVersion()
   }
 })

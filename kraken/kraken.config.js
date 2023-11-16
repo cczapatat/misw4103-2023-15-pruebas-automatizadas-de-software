@@ -1,6 +1,8 @@
+const {validateVersion} = require('./utils');
+
 module.exports = {
     env: {
-        baseUrl: "http://localhost:2368",
+        baseUrl: validateVersion ? 'http://localhost:2368' : 'http://localhost:3100',
         site: "Ghost",
         name: "admin",
         email: "admin@email.com",
