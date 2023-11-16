@@ -7,7 +7,7 @@ describe('ghost admins posts scenario 5', () => {
   const password = Cypress.env('password');
 
   before(() => {
-    cy.createAdmin(site, name, email, password);
+    cy.start('scenario_5');
     cy.login(email, password);  
     cy.deleteAll();
     cy.goToDashboard();
@@ -33,16 +33,7 @@ describe('ghost admins posts scenario 5', () => {
       });
 
       it('Then admin publish post with schedule then filter ', () => {
-                
-        cy.schedulePost();
-        cy.filterScheduledPost();       
-       
-        cy.wait(500);
-        cy.get('li.gh-list-row').then(($post) => {
-          expect($post.length).to.equal(1);
-        });
-        cy.screenshot();
-        cy.wait(500);
+        cy.validateScenarioFive()
       });
     });
   });

@@ -105,12 +105,12 @@ Cypress.Commands.add('newPage', () => {
 })
 
 Cypress.Commands.add('createPage', (title, description) => {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
+
     cy.get('textarea[placeholder="Page title"]').type(title)
-    if(version){
-        cy.get('.koenig-react-editor').type(description +'{enter}')
-    }else{
-        cy.get('.koenig-editor__editor-wrapper').type(description +'{enter}')
-    }    
+
+    cy.get(descriptionFieldName).type(description +'{enter}')
+
     cy.wait(2000)
     cy.screenshot(getNamePhoto())
 })
@@ -237,6 +237,7 @@ Cypress.Commands.add('listPagesAndCheck', (post) => {
 Cypress.Commands.add('publishPage', () => {
     cy.wait(500);
     cy.contains('Publish').click()
+
     cy.wait(2000)
     cy.screenshot(getNamePhoto())
 	cy.get('button.gh-btn.gh-btn-black.gh-btn-large').click()
@@ -354,12 +355,10 @@ Cypress.Commands.add('clickFirstPost', () => {
 })
 
 Cypress.Commands.add('createPost', (title, description) => {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
+
     cy.get('textarea[placeholder="Post title"]').type(title)
-    if(version){
-        cy.get('.koenig-react-editor').type(description +'{enter}')
-    } else{
-        cy.get('.koenig-editor__editor-wrapper').type(description +'{enter}')
-    }
+    cy.get(descriptionFieldName).type(description +'{enter}')
     cy.wait(1000)
     cy.screenshot(getNamePhoto())
 })
@@ -368,6 +367,9 @@ Cypress.Commands.add('checkFirstPost', () => {
     cy.get('li.gh-list-row.gh-posts-list-item').then(($post)=>{
         expect($post.length).to.equal(1)
     });
+    cy.wait(1000)
+    cy.screenshot(getNamePhoto())
+
 })
 
 Cypress.Commands.add('listPostAndCheck', (post) => {
@@ -381,7 +383,7 @@ Cypress.Commands.add('listPostAndCheck', (post) => {
 Cypress.Commands.add('schedulePost', () => {
     cy.wait(500);
     cy.contains('Publish').click();
-    cy.screenshot();
+    cy.screenshot(getNamePhoto());
     cy.wait(500);
     cy.contains('Right now').click();
     cy.wait(500);
@@ -415,6 +417,7 @@ Cypress.Commands.add('publishPost', () => {
     cy.wait(1000)
     cy.screenshot(getNamePhoto())
 })
+
 
 
 Cypress.Commands.add('rigthDeletePost', (postName) => {
@@ -626,13 +629,11 @@ Cypress.Commands.add('ConfirmDeleteDialog', () => {
 })
 
 Cypress.Commands.add('deleteAll', () => {
+    const buttonDeleteName = version ? 'button[data-test-button="delete-all"]' : 'button.gh-btn.gh-btn-red.js-delete'
+
     cy.visit('/ghost/#/settings/labs')
     cy.wait(4000)
-    if(version){
-        cy.get('button[data-test-button="delete-all"]').click({force: true});
-    } else {
-        cy.get('button.gh-btn.gh-btn-red.js-delete').click({force: true});
-    }
+    cy.get(buttonDeleteName).click({force: true});
     cy.wait(3000)
     cy.get('button.gh-btn.gh-btn-red.gh-btn-icon.ember-view').click({force: true});
     cy.wait(1000)
@@ -640,9 +641,42 @@ Cypress.Commands.add('deleteAll', () => {
     cy.wait(1000)
 })
 
-Cypress.Commands.add('validateScenarioOne', () => {
+Cypress.Commands.add('validateNotExistItems', () => {
     cy.wait(500);
-    cy.get('li.gh-list-row').should('not.exist');
+    cy.get('li.gh-list-row.gh-posts-list-item').should('not.exist');
     cy.screenshot(getNamePhoto());
     cy.wait(500);
+})
+
+Cypress.Commands.add('validateQuantityItems', (quantity) => {
+    cy.wait(500);
+    cy.get('li.gh-list-row.gh-posts-list-item').then(($post) => {
+        expect($post.length).to.equal(quantity);
+    });
+    cy.screenshot(getNamePhoto());
+    cy.wait(500);
+})
+
+Cypress.Commands.add('validateScenarioOne', () => {
+    cy.validateNotExistItems()
+})
+
+Cypress.Commands.add('validateScenarioTwo', () => {
+    cy.filterPublishedPost();
+    cy.validateQuantityItems(1)
+})
+
+Cypress.Commands.add('validateScenarioFive', () => {
+    cy.schedulePost();
+    cy.filterScheduledPost();       
+    cy.validateQuantityItems(1)
+})
+
+Cypress.Commands.add('validateScenarioFourteen', () => {
+    cy.validateNotExistItems()
+})
+
+Cypress.Commands.add('validateScenarioFifteen', () => {
+    cy.filterPublishedPages();
+    cy.validateQuantityItems(1)
 })
