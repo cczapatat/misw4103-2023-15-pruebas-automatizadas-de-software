@@ -1,11 +1,9 @@
 describe('ghost admins page scenario 14', () => {
-  const site = Cypress.env('site');
-  const name = Cypress.env('name');
   const email = Cypress.env('email');
   const password = Cypress.env('password');
 
   before(() => {
-    cy.createAdmin(site, name, email, password);
+    cy.start('scenario_14');
     cy.login(email, password);
     cy.deleteAll();
     cy.goToDashboard();
@@ -23,10 +21,7 @@ describe('ghost admins page scenario 14', () => {
       });
 
       it('Then admin sees empty page list', () => {
-        cy.wait(500);
-        cy.get('li.gh-list-row').should('not.exist');
-        cy.screenshot();
-        cy.wait(500);
+        cy.validateScenarioFourteen()
       });
     });
   });

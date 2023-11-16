@@ -1,13 +1,11 @@
 import { faker } from '@faker-js/faker';
 
 describe('ghost admins page scenario 15', () => {
-  const site = Cypress.env('site');
-  const name = Cypress.env('name');
   const email = Cypress.env('email');
   const password = Cypress.env('password');
 
   before(() => {
-    cy.createAdmin(site, name, email, password);
+    cy.start('scenario_15');
     cy.login(email, password);
     cy.deleteAll();
     cy.goToDashboard();
@@ -28,7 +26,7 @@ describe('ghost admins page scenario 15', () => {
         const title = faker.person.jobTitle();
         const description = faker.lorem.paragraph(2);
 
-        cy.get('li.gh-list-row').should('not.exist');
+        cy.validateNotExistItems()
         cy.newPage();
         cy.createPage(title, description);
         cy.publishPage();
@@ -36,13 +34,7 @@ describe('ghost admins page scenario 15', () => {
       });
 
       it('Then admin sees the new page', () => {
-        cy.filterPublishedPages();
-        cy.wait(500);
-        cy.get('li.gh-list-row').then(($post) => {
-          expect($post.length).to.equal(1);
-        });
-        cy.screenshot();
-        cy.wait(500);
+        cy.validateScenarioFifteen()
       });
     });
   });
