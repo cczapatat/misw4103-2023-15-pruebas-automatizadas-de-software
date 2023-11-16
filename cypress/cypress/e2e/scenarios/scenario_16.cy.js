@@ -11,7 +11,7 @@ describe('ghost admin page scenario 16', () => {
 	let descripcion = new String();
 	
     before(()=>{
-		cy.createAdmin(site, name, email, password)
+        cy.start('scenario_16');
         cy.login(email, password)
         cy.deleteAll();
         cy.goToDashboard();
@@ -46,8 +46,7 @@ describe('ghost admin page scenario 16', () => {
             it('Then admin sees empty Page list', () => {
                 cy.listPages();
                 cy.wait(1000);
-                cy.get('li.gh-list-row').should('not.exist');
-                cy.screenshot();
+                cy.testFirstPageNotExist();
             }) 
         })	
 	})
