@@ -23,36 +23,29 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-Cypress.Commands.add('createAdmin', (site, name, email, password) => {
-    cy.visit('/ghost/')
-    cy.wait(1000)
-    cy.url().then(($url) => { // cy.url().should('include', 'signin')
-        cy.log('url: '+ $url)
-        if ($url.includes('setup')) {
-            cy.visit('/ghost')
-    
-            cy.wait(1000)    
-            cy.get('input[id="blog-title"]').clear().type(site)
-            cy.get('input[id="name"]').clear().type(name)
-            cy.get('input[id="email"]').clear().type(email)
-            cy.get('input[id="password"]').clear().type(password)
-            cy.get('button[type="submit"]').click()
-    
-            cy.wait(1000)
 
-            cy.url().should('include', 'setup/done')
-            cy.visit('/ghost/#/dashboard')        
-            
-        
-            cy.wait(1000)
-            cy.visit('/ghost/#/signout/')          
-        } 
-    })
+const version = Cypress.env('version');
+const suffix =  version ? 'new' : 'old'
+
+let escenario
+let counter
+
+const getNamePhoto = () => {
+    const title = `${escenario}_${counter}_${suffix}`
+    counter++
+
+    return title
+}
+
+Cypress.Commands.add('start', (scenaryName) => {
+    escenario = scenaryName
+    counter = 0;
 })
 
 Cypress.Commands.add('goToDashboard', () => {
     cy.visit('/ghost/#/dashboard')        
     cy.wait(1000)
+    cy.screenshot(getNamePhoto())
 })
 
 Cypress.Commands.add('login', (username, password) => {
@@ -63,7 +56,6 @@ Cypress.Commands.add('login', (username, password) => {
     cy.get('input[name="password"]').clear().type(password)
     cy.get('button[type="submit"]').click()
     cy.wait(4000)
-	// cy.screenshot()
 })
 
 Cypress.Commands.add('logout', () => {
@@ -624,4 +616,11 @@ Cypress.Commands.add('deleteAll', () => {
     cy.get('button.gh-btn.gh-btn-red.gh-btn-icon.ember-view').click({force: true});
     cy.wait(1000)
     cy.get('button.gh-alert-close').click();
+})
+
+Cypress.Commands.add('validateScenarioOne', () => {
+    cy.wait(500);
+    cy.get('li.gh-list-row').should('not.exist');
+    cy.screenshot(getNamePhoto());
+    cy.wait(500);
 })
