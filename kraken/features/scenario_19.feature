@@ -2,8 +2,9 @@ Feature: Scenario 19
 
   @user1 @web
   Scenario: Admin creates a new page with tag, list tags, new tag, validate tag, create page, publish page, list page
-    Given Admin starts app
-      When Admin navigates to "/tags" page
+     Given Admin starts app
+      When Bot sets 19 scenario
+        And Admin navigates to "/tags" page
         And I wait for 2 seconds
         And Admin clicks to new Tag
         And I wait for 2 seconds
@@ -19,8 +20,8 @@ Feature: Scenario 19
         And I wait for 2 seconds
         And Admin navigates to "/pages" page
         And I wait for 2 seconds
-      Then Admin sees 1 pages
-      When Admin navigates to "/pages?tag=cczt" page
-        And I wait for 2 seconds
-      Then Admin visualizes "/pages?tag=cczt" page
         And Admin sees 1 pages
+        And Admin navigates to "/pages?tag=cczt" page
+        And I wait for 2 seconds
+        And Admin visualizes "/pages?tag=cczt" page
+      Then Admin sees 1 pages
