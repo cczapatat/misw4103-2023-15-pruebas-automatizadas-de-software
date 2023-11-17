@@ -1,10 +1,8 @@
 const validateVersion = () => {
-    const validation = process.env.VERSION === '5.68.0'.trim()
+    const validation = process.env.VERSION.trim() === '5.68.0';
 
-    console.log(validation)
-
-    return validation
+    return validation;
 }
 
-module.exports = {validateVersion}
+module.exports = { validateVersion }
 

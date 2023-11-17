@@ -1,10 +1,10 @@
 {
   "scripts": {
     "krakenos:new": "VERSION=5.68.0 ./node_modules/.bin/kraken-node run",
-    "krakenwinnew": "set VERSION=5.68.0 && .\\node_modules\\.bin\\kraken-node run",
+    "krakenwin:new": "set VERSION=5.68.0 && .\\node_modules\\.bin\\kraken-node run",
     "krakenwinmulti:new": "set VERSION=5.68.0 && node runwinkraken.js",
     "krakenos:old": "VERSION=5.8.0 ./node_modules/.bin/kraken-node run",
-    "krakenwinold": "set VERSION=5.8.0 && .\\node_modules\\.bin\\kraken-node run",
+    "krakenwin:old": "set VERSION=5.8.0 && .\\node_modules\\.bin\\kraken-node run",
     "krakenwinmulti:old": "set VERSION=5.8.0 && node runwinkraken.js"
   },
   "dependencies": {

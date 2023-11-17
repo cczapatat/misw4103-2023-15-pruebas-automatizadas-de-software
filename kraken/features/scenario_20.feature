@@ -3,7 +3,8 @@ Feature: Scenario 20
   @user1 @web
   Scenario: Admin crates new page, publish page, list and validate page, admin searches page and sees it in edition format
     Given Admin starts app
-    When Admin navigates to "/pages" page
+    When Bot sets 20 scenario
+    And Admin navigates to "/pages" page
     And I wait for 2 seconds
     And Admin click on New Page
     And I wait for 2 seconds

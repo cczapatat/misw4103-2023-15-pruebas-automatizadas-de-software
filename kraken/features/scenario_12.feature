@@ -3,7 +3,8 @@ Feature: Scenario 12
   @user1 @web
   Scenario: Admin creates a new post with tag, list tags, new tag, validate tag, create post, publish post, list post
     Given Admin starts app
-    When Admin navigates to "/tags" page
+    When Bot sets 12 scenario
+    And Admin navigates to "/tags" page
     And I wait for 2 seconds
     And Admin clicks to new Tag
     And I wait for 2 seconds
