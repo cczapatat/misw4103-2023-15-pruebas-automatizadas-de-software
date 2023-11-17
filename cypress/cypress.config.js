@@ -4,7 +4,6 @@ const {validateVersion} = require('./utils');
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      // implement node event listeners here
     },
     baseUrl: validateVersion() ? 'http://localhost:2368' : 'http://localhost:3100'
   },
