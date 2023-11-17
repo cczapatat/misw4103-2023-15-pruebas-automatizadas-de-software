@@ -2,7 +2,7 @@ const {validateVersion} = require('./utils');
 
 module.exports = {
     env: {
-        baseUrl: validateVersion ? 'http://localhost:2368' : 'http://localhost:3100',
+        baseUrl: validateVersion() ? 'http://localhost:2368' : 'http://localhost:3100',
         site: "Ghost",
         name: "admin",
         email: "admin@email.com",
@@ -14,6 +14,7 @@ module.exports = {
         lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a lacus in sem tempus",
         draftPost: "Cypress Test Post",
         scheduledPost: "Cypress Test Post Scheduled",
-        publishedPost: "Cypress Test Post Published"
+        publishedPost: "Cypress Test Post Published",
+        version: validateVersion()
     }
 }

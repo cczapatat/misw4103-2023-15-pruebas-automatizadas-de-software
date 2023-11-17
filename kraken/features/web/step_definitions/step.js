@@ -3,10 +3,25 @@ const { faker } = require('@faker-js/faker');
 const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 
 const configProperties = require('../../../kraken.config');
-
+const baseDirScreens = "./reports/";
 const URL_BASE = `${configProperties.env.baseUrl}/ghost/#`;
-
+const version = configProperties.env.version;
 const wait = (ms = 1) => new Promise(resolve => setTimeout(resolve, ms * 1000));
+const fs = require('fs');
+let escenario = 0
+let counter
+
+const suffix =  configProperties.env.version ? 'new' : 'old'
+
+const getNamePhoto = () => {
+    if (!fs.existsSync(baseDirScreens)){
+        fs.mkdirSync(baseDirScreens, { recursive: true });
+    }
+    const title = `${baseDirScreens}scenario_${escenario}_${counter}_${suffix}.png`
+    counter++
+
+    return title
+}
 
 function selectComponent(context, componentDetails) {
     context.driver.$(componentDetails).waitForExist(5000);
@@ -19,7 +34,7 @@ async function login(context) {
     await context.driver.url(`${URL_BASE}/signin/`);
     await selectComponent(context, '.gh-input.email').setValue(configProperties.env.email);
     await selectComponent(context, '.gh-input.password').setValue(configProperties.env.password);
-    await selectComponent(context, `[data-test-button='sign-in']`).click();
+    await selectComponent(context, 'button[type="submit"]').click();
 }
 
 async function logout(context) {
@@ -27,8 +42,9 @@ async function logout(context) {
 }
 
 async function backToEditorPost(context) {
-    await selectComponent(context, `[data-test-button='close-publish-flow']`).click();
+    await selectComponent(context, 'button.gh-btn-editor.gh-publish-back-button').click();
     await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function backToEditorPage(context) {
@@ -56,20 +72,26 @@ async function createNewTag(context) {
 
     const currentPage = await context.driver.getUrl();
     assert.isTrue(currentPage.includes('tags/new'));
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function deleteTag(context) {
     await selectComponent(context, 'span=Delete tag').click();
     await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
     await selectComponent(context, 'span=Delete').click();
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function createTag(context, name, desc) {
     await selectComponent(context, 'input[id="tag-name"]').setValue(name);
     await wait(1);
     await selectComponent(context, 'textarea[id="tag-description"]').setValue(desc);
-    await wait(1);
     await selectComponent(context, 'span=Save').click();
+    await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function clickFirstTag(context) {
@@ -84,8 +106,9 @@ async function clickFirstTag(context) {
 }
 
 async function deleteAll(context) {
+    const buttonDeleteName = version ? 'button[data-test-button="delete-all"]' : 'button.gh-btn.gh-btn-red.js-delete'
     await context.driver.url(`${URL_BASE}/settings/labs`);
-    await selectComponent(context, `button[data-test-button="delete-all"]`).click();
+    await selectComponent(context, buttonDeleteName).click();
     await wait(1);
     await selectComponent(context, `button.gh-btn.gh-btn-red.gh-btn-icon.ember-view`).click();
     await wait(1);
@@ -108,16 +131,21 @@ async function searchGlobalAndClick(context, title) {
 
 async function newPost(context) {
     await selectComponent(context, `span=New post`).click();
+    await wait(1);
     const currentPage = await context.driver.getUrl();
     assert.isTrue(currentPage.includes('editor/post'));
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function createPost(context, title, description) {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
     await selectComponent(context, 'textarea[placeholder="Post title"]').setValue(title);
-    const element = await selectComponent(context, '.koenig-react-editor');
+    const element = await selectComponent(context, descriptionFieldName);
     await element.click();
     await wait(1);
     await element.setValue(description);
+    await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function editPost(context, title, description) {
@@ -135,10 +163,13 @@ async function editPost(context, title, description) {
 async function publishPost(context) {
     await selectComponent(context, 'span=Publish').click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function schedulePost(context) {
@@ -154,10 +185,11 @@ async function schedulePost(context) {
     await wait(1);
 }
 
-async function deletePost(context) {
+async function deletePost(context) { 
+    selectedDelete = version ?'button.gh-btn.gh-btn-outline.gh-btn-icon.gh-btn-fullwidth':'button.gh-btn.gh-btn-hover-red.gh-btn-icon.settings-menu-delete-button';
     await selectComponent(context, 'button[title="Settings"]').click();
     await wait(1);
-    await selectComponent(context, 'button.gh-btn.gh-btn-outline.gh-btn-icon.gh-btn-fullwidth').click();
+    await selectComponent(context, selectedDelete).click();
     await wait(1);
     await selectComponent(context, 'span=Delete').click();
 }
@@ -180,10 +212,14 @@ async function listPublishedPosts(context) {
 
 async function listPages(context) {
     await context.driver.url(`${URL_BASE}/pages`);
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function listPosts(context) {
     await context.driver.url(`${URL_BASE}/posts`);
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function listTags(context) {
@@ -192,10 +228,14 @@ async function listTags(context) {
 
 async function listInternalTags(context) {
     await context.driver.url(`${URL_BASE}/tags?type=internal`);
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function listPublishedPages(context) {
     await context.driver.url(`${URL_BASE}/pages?type=published`);
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function listDraftPages(context) {
@@ -214,6 +254,8 @@ async function listPagesAndCheck(context, page) {
 
 async function listDraftPosts(context) {
     await context.driver.url(`${URL_BASE}/posts?type=draft`);
+    await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function newPage(context) {
@@ -221,13 +263,15 @@ async function newPage(context) {
 }
 
 async function createPage(context, titulo, descripcion) {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
     await selectComponent(context, 'textarea[placeholder="Page title"]').setValue(titulo);
     await wait(1);
-    const element = await selectComponent(context, '.koenig-react-editor')
+    const element = await selectComponent(context, descriptionFieldName)
     await element.click();
     await wait(1);
     await element.setValue(descripcion);
-
+    await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function editPage(context, titulo, descripcion) {
@@ -244,19 +288,31 @@ async function editPage(context, titulo, descripcion) {
 }
 
 async function clickFirstPage(context) {
-    const div = await selectComponent(context, 'div.posts-list.gh-list.feature-memberAttribution');
-    const items = await div.$$('div.gh-posts-list-item-group');
+    let div
+    let items
+    if(version) {
+        div = await selectComponent(context, 'div.posts-list.gh-list.feature-memberAttribution');
+        items = await div.$$('div.gh-posts-list-item-group');
+    } else {
+        div = await selectComponent(context, 'ol.gh-list');
+        items = await div.$$('li.gh-posts-list-item');
+    }
     const pageOne = items[0];
     await pageOne.click();
+    await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function publishPage(context) {
     await selectComponent(context, 'span=Publish').click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
     await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
     await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function schedulePage(context) {
@@ -273,12 +329,16 @@ async function schedulePage(context) {
 }
 
 async function deletePage(context) {
+    selectedDelete = version? 'button.gh-btn.gh-btn-outline.gh-btn-icon.gh-btn-fullwidth': 'button.gh-btn.gh-btn-hover-red.gh-btn-icon.settings-menu-delete-button';
     await selectComponent(context, 'button[title="Settings"]').click();
     await wait(1);
-    await selectComponent(context, 'button.gh-btn.gh-btn-outline.gh-btn-icon.gh-btn-fullwidth').click();
+    await context.driver.saveScreenshot(getNamePhoto());
+    await selectComponent(context, selectedDelete).click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
     await selectComponent(context, 'span=Delete').click();
     await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function unschedulePage(context) {
@@ -327,6 +387,8 @@ Given('Admin starts app', async function () {
 When('Admin navigates to {string} page', async function (pageUrl) {
     const newUrl = pageUrl[0] === '/' ? pageUrl.substring(1) : pageUrl;
     await this.driver.url(`${URL_BASE}/${newUrl}`);
+    await wait(1);
+    await this.driver.saveScreenshot(getNamePhoto());
 });
 
 When('Admin clicks to new Post', async function () {
@@ -350,10 +412,20 @@ When('Admin schedules post', async function () {
 });
 
 When('Admin clicks {int} post', async function (position) {
-    const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
-    const items = await div.$$('div.gh-posts-list-item-group');
+    let div
+    let items
+    if(version){
+        div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
+        items = await div.$$('div.gh-posts-list-item-group');
+    }else{
+        div = await selectComponent(this, 'ol.posts-list.gh-list');
+        items = await div.$$('li.gh-posts-list-item');
+    }
+
     const post = items[position - 1];
     await post.click();
+    await wait(1);
+    await this.driver.saveScreenshot(getNamePhoto());
 });
 
 When('Admin clicks {int} tag', async function (position) {
@@ -492,20 +564,47 @@ Then('Admin visualizes {string} page', async function (pageUrl) {
     assert.isTrue(currentPage.includes(pageUrl));
 });
 
+When('Bot sets {int} scenario', async function (total) {
+    console.log(total)
+    escenario = total
+    counter = 0;
+
+});
+
 Then('Admin sees {int} posts', async function (total) {
-    const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
-    const items = await div.$$('div.gh-posts-list-item-group');
+    let div
+    let items
+    if(version){
+        div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
+        items = await div.$$('div.gh-posts-list-item-group');
+    } else{
+        div = await selectComponent(this, 'ol.posts-list.gh-list');
+        items = await div.$$('li.gh-posts-list-item');  
+    }
+
     assert.equal(items.length, total);
+    await this.driver.saveScreenshot(getNamePhoto());
 });
 
 Then('Admin sees {int} tags', async function (total) {
     const ol = await selectComponent(this, 'ol.tags-list.gh-list');
     const items = await ol.$$('li.gh-tags-list-item');
     assert.equal(items.length, total);
+    await wait(1)
+    await this.driver.saveScreenshot(getNamePhoto());
 });
 
 Then('Admin sees {int} pages', async function (total) {
-    const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
-    const items = await div.$$('div.gh-posts-list-item-group');
+    let div
+    let items
+    if(version) {
+        div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
+        items = await div.$$('div.gh-posts-list-item-group');
+    } else {
+        div = await selectComponent(this, 'ol.gh-list');
+        items = await div.$$('li.gh-posts-list-item');
+    }
     assert.equal(items.length, total);
+    await wait(1)
+    await this.driver.saveScreenshot(getNamePhoto());
 });
