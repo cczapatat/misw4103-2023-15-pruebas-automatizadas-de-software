@@ -3,7 +3,8 @@ Feature: Scenario 7
   @user1 @web
   Scenario: Admin creates a new scheduled post, list scheduled posts, edit post, cancel scheduled, list posts and list scheduled posts
     Given Admin starts app
-    When Admin navigates to "/posts" page
+    When Bot sets 7 scenario
+    And Admin navigates to "/posts" page
     And I wait for 2 seconds
     And Admin clicks to new Post
     And Admin creates new Post

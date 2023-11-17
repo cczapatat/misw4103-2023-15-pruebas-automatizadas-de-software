@@ -3,7 +3,8 @@ Feature: Scenario 18
   @user1 @web
   Scenario: Admin crates new schedule page, publish page
     Given Admin starts app
-    When Admin navigates to "/pages" page
+    When Bot sets 18 scenario
+    And Admin navigates to "/pages" page
     And I wait for 2 seconds
     And Admin click on New Page
     And I wait for 2 seconds
