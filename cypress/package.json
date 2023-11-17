@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@faker-js/faker": "^8.2.0",
-    "cypress": "^13.3.0"
+    "cypress": "^13.3.0",
+    "resemblejs": "^5.0.0"
   },
   "scripts": {
     "cypressos:new": "VERSION=5.68.0 cypress open",
