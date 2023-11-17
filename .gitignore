@@ -55,3 +55,8 @@ Thumbs.db
 /cypress/cypress/downloads/
 /cypress/cypress/screenshots/
 /cypress/node_modules/
+/cypress/results
+/cypress/results/*
+/cypress/vrt
+/cypress/vrt/results
+/cypress/vrt/results/*
