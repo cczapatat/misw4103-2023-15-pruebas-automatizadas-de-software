@@ -5,9 +5,10 @@ Feature: Scenario 17
     @user1 @web
     Scenario: View draft post
         Given Admin starts app
-            When Admin navigates to "/pages" page
+            When Bot sets 17 scenario
+                And Admin navigates to "/pages" page
                 And I wait for 5 seconds
-            Then Admin visualizes "/pages" page
+                And Admin visualizes "/pages" page
                 And I wait for 1 seconds
                 And Admin click on New Page
                 And Admin create a New Page                

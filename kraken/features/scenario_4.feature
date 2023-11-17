@@ -4,10 +4,11 @@ Feature: Scenario 4
 
     @user1 @web
     Scenario: View draft post
-        Given Admin starts app
-            When Admin navigates to "/posts" page
+         Given Admin starts app
+            When Bot sets 4 scenario
+                And Admin navigates to "/posts" page
                 And I wait for 5 seconds
-            Then Admin visualizes "/posts" page
+                And Admin visualizes "/posts" page
                 And I wait for 1 seconds
                 And Admin clicks to new Post
                 And Admin creates new Post                
