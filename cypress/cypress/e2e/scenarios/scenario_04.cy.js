@@ -1,13 +1,12 @@
 import { faker } from '@faker-js/faker';
 
 describe('ghost admins posts scenario 4', () => {
-  const site = Cypress.env('site');
-  const name = Cypress.env('name');
+
   const email = Cypress.env('email');
   const password = Cypress.env('password');
 
   before(() => {
-    cy.createAdmin(site, name, email, password);
+    cy.start('scenario_4');
     cy.login(email, password);  
     cy.deleteAll();
     cy.goToDashboard();
@@ -35,14 +34,7 @@ describe('ghost admins posts scenario 4', () => {
       });
 
       it('Then admin delete the post', () => {
-        cy.filterDraftPost();       
-       
-        cy.wait(500);
-        cy.get('li.gh-list-row').then(($post) => {
-          expect($post.length).to.equal(1);
-        });
-        cy.screenshot();
-        cy.wait(500);
+        cy.validateScenarioFour();
       });
     });
   });

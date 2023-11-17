@@ -1,13 +1,11 @@
 import { faker } from '@faker-js/faker';
 
 describe('ghost admins posts scenario 12', () => {
-  const site = Cypress.env('site');
-  const name = Cypress.env('name');
   const email = Cypress.env('email');
   const password = Cypress.env('password');
 
   before(() => {
-    cy.createAdmin(site, name, email, password);
+    cy.start('scenario_12');
     cy.login(email, password);
     cy.deleteAll();
     cy.goToDashboard();
@@ -47,12 +45,7 @@ describe('ghost admins posts scenario 12', () => {
       });
 
       it('Then admin sees one post from list post by tag', () => {
-        cy.filterPostByTag(titleTag);
-        cy.get('li.gh-list-row').then(($post) => {
-          expect($post.length).to.equal(1);
-        });
-        cy.screenshot();
-        cy.wait(500);
+        cy.validateScenarioTwelve(titleTag);
       });
     });
   });

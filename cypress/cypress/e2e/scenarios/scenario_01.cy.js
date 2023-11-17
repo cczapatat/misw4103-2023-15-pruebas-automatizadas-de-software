@@ -1,6 +1,4 @@
 describe('ghost admins posts scenario 1', () => {
-  const site = Cypress.env('site');
-  const name = Cypress.env('name');
   const email = Cypress.env('email');
   const password = Cypress.env('password');
 

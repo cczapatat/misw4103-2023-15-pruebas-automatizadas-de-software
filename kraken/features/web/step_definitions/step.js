@@ -6,6 +6,7 @@ const configProperties = require('../../../kraken.config');
 const baseDirScreens = "./reports/";
 const URL_BASE = `${configProperties.env.baseUrl}/ghost/#`;
 const version = configProperties.env.version;
+
 const wait = (ms = 1) => new Promise(resolve => setTimeout(resolve, ms * 1000));
 const fs = require('fs');
 let escenario = 0
@@ -34,7 +35,9 @@ async function login(context) {
     await context.driver.url(`${URL_BASE}/signin/`);
     await selectComponent(context, '.gh-input.email').setValue(configProperties.env.email);
     await selectComponent(context, '.gh-input.password').setValue(configProperties.env.password);
+
     await selectComponent(context, 'button[type="submit"]').click();
+
 }
 
 async function logout(context) {
@@ -109,6 +112,7 @@ async function deleteAll(context) {
     const buttonDeleteName = version ? 'button[data-test-button="delete-all"]' : 'button.gh-btn.gh-btn-red.js-delete'
     await context.driver.url(`${URL_BASE}/settings/labs`);
     await selectComponent(context, buttonDeleteName).click();
+
     await wait(1);
     await selectComponent(context, `button.gh-btn.gh-btn-red.gh-btn-icon.ember-view`).click();
     await wait(1);
@@ -264,6 +268,7 @@ async function newPage(context) {
 
 async function createPage(context, titulo, descripcion) {
     const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
+
     await selectComponent(context, 'textarea[placeholder="Page title"]').setValue(titulo);
     await wait(1);
     const element = await selectComponent(context, descriptionFieldName)
@@ -572,15 +577,12 @@ When('Bot sets {int} scenario', async function (total) {
 });
 
 Then('Admin sees {int} posts', async function (total) {
-    let div
-    let items
-    if(version){
-        div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
-        items = await div.$$('div.gh-posts-list-item-group');
-    } else{
-        div = await selectComponent(this, 'ol.posts-list.gh-list');
-        items = await div.$$('li.gh-posts-list-item');  
-    }
+
+    const fatherItemComponent = version ? 'div.posts-list.gh-list.feature-memberAttribution' : 'ol.posts-list.gh-list'
+    const childItemComponent = version ? 'div.gh-posts-list-item-group' : 'li.gh-list-row.gh-posts-list-item'
+
+    const fatherComponent = await selectComponent(this, fatherItemComponent);
+    const items = await fatherComponent.$$(childItemComponent);
 
     assert.equal(items.length, total);
     await this.driver.saveScreenshot(getNamePhoto());
@@ -595,15 +597,13 @@ Then('Admin sees {int} tags', async function (total) {
 });
 
 Then('Admin sees {int} pages', async function (total) {
-    let div
-    let items
-    if(version) {
-        div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
-        items = await div.$$('div.gh-posts-list-item-group');
-    } else {
-        div = await selectComponent(this, 'ol.gh-list');
-        items = await div.$$('li.gh-posts-list-item');
-    }
+
+    const fatherItemComponent = version ? 'div.posts-list.gh-list.feature-memberAttribution' : 'ol.gh-list'
+    const childItemComponent = version ? 'div.gh-posts-list-item-group' : 'li.gh-list-row.gh-posts-list-item'
+
+    const fatherComponent = await selectComponent(this, fatherItemComponent);
+    const items = await fatherComponent.$$(childItemComponent);
+
     assert.equal(items.length, total);
     await wait(1)
     await this.driver.saveScreenshot(getNamePhoto());
