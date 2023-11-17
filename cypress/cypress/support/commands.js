@@ -423,9 +423,19 @@ Cypress.Commands.add('publishPost', () => {
 Cypress.Commands.add('rigthDeletePost', (postName) => {
     cy.visit('ghost/#/posts')
     cy.url().should('include', 'posts')
-    cy.get('li.gh-list-row').first().rightclick()
-    cy.wait(1000)
-    cy.get('button[type="button"] > span.red').click()
+
+    if(version)
+    {
+        cy.get('li.gh-list-row').first().rightclick()
+        cy.wait(1000)
+        cy.get('button[type="button"] > span.red').click()
+    }
+    else{
+        cy.get('li.gh-posts-list-item').first().click()
+        cy.deletePost();
+    }
+   
+    
 })
 
 Cypress.Commands.add('filterDraftPost', () => {
@@ -624,7 +634,13 @@ Cypress.Commands.add('clickLeaveButton', () => {
 
 
 Cypress.Commands.add('ConfirmDeleteDialog', () => {
-    cy.get('button[data-test-button="confirm"]').contains('Delete').click({force: true});
+    if(version){ 
+        cy.get('button[data-test-button="confirm"]').contains('Delete').click({force: true});
+    }
+    else{
+        cy.get('.gh-btn-red').children().contains('Delete').click({force: true});
+    }
+
     cy.wait(2000);
 })
 
@@ -657,6 +673,29 @@ Cypress.Commands.add('validateQuantityItems', (quantity) => {
     cy.wait(500);
 })
 
+Cypress.Commands.add('ValidateRigthClickDeletion', () => { 
+    cy.wait(1500);
+    let beforeDelete = 0;
+    cy.get('li.gh-list-row').then(($post) => {
+        beforeDelete = $post.length
+    });
+
+    cy.rigthDeletePost();
+
+    if(version){
+        cy.ConfirmDeleteDialog();
+    }
+   
+    cy.filterPublishedPost();
+
+    cy.wait(500);
+    cy.get('.no-posts').should('exist');
+
+    cy.screenshot(getNamePhoto());
+    cy.wait(500);
+})
+
+
 Cypress.Commands.add('validateScenarioOne', () => {
     cy.validateNotExistItems()
 })
@@ -666,11 +705,36 @@ Cypress.Commands.add('validateScenarioTwo', () => {
     cy.validateQuantityItems(1)
 })
 
+Cypress.Commands.add('validateScenarioThree', () => {
+    cy.filterPublishedPost();
+    cy.ValidateRigthClickDeletion();
+    
+})
+
+Cypress.Commands.add('validateScenarioFour', () => {
+    cy.filterDraftPost();
+    cy.wait(500);    
+    cy.validateQuantityItems(1)   
+    cy.wait(500);
+})
+
 Cypress.Commands.add('validateScenarioFive', () => {
     cy.schedulePost();
     cy.filterScheduledPost();       
     cy.validateQuantityItems(1)
 })
+
+Cypress.Commands.add('validateScenarioTen', () => { 
+    cy.listTags();
+    cy.wait(1000);
+    cy.get('li.gh-list-row.gh-tags-list-item').then(($tags)=>{
+        expect($tags.length).to.equal(1)
+    });
+    cy.screenshot(getNamePhoto());
+})
+
+
+
 
 Cypress.Commands.add('validateScenarioFourteen', () => {
     cy.validateNotExistItems()
@@ -680,3 +744,20 @@ Cypress.Commands.add('validateScenarioFifteen', () => {
     cy.filterPublishedPages();
     cy.validateQuantityItems(1)
 })
+
+Cypress.Commands.add('validateScenarioSeventeen', () => {
+    cy.filterDraftPages(); 
+    cy.wait(500);
+    cy.validateQuantityItems(1)
+    cy.screenshot(getNamePhoto());
+    cy.wait(500);
+})
+
+Cypress.Commands.add('validateScenarioNineteen', (titleTag) => {
+   
+    cy.filterPagesByTag(titleTag);
+    cy.validateQuantityItems(1)
+    cy.screenshot(getNamePhoto());
+    cy.wait(500);
+
+ })
