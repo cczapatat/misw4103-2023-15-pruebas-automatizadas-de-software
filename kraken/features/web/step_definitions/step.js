@@ -5,6 +5,7 @@ const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 const configProperties = require('../../../kraken.config');
 
 const URL_BASE = `${configProperties.env.baseUrl}/ghost/#`;
+const version = configProperties.env.version;
 
 const wait = (ms = 1) => new Promise(resolve => setTimeout(resolve, ms * 1000));
 
@@ -19,7 +20,7 @@ async function login(context) {
     await context.driver.url(`${URL_BASE}/signin/`);
     await selectComponent(context, '.gh-input.email').setValue(configProperties.env.email);
     await selectComponent(context, '.gh-input.password').setValue(configProperties.env.password);
-    await selectComponent(context, `[data-test-button='sign-in']`).click();
+    await selectComponent(context, 'button.login.gh-btn.gh-btn-login').click();
 }
 
 async function logout(context) {
@@ -84,8 +85,10 @@ async function clickFirstTag(context) {
 }
 
 async function deleteAll(context) {
+    const deleteButtonComponentName = version ? 'button[data-test-button="delete-all"]' : 'button.gh-btn.gh-btn-red.js-delete'
+
     await context.driver.url(`${URL_BASE}/settings/labs`);
-    await selectComponent(context, `button[data-test-button="delete-all"]`).click();
+    await selectComponent(context, deleteButtonComponentName).click();
     await wait(1);
     await selectComponent(context, `button.gh-btn.gh-btn-red.gh-btn-icon.ember-view`).click();
     await wait(1);
@@ -113,8 +116,10 @@ async function newPost(context) {
 }
 
 async function createPost(context, title, description) {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
+
     await selectComponent(context, 'textarea[placeholder="Post title"]').setValue(title);
-    const element = await selectComponent(context, '.koenig-react-editor');
+    const element = await selectComponent(context, descriptionFieldName);
     await element.click();
     await wait(1);
     await element.setValue(description);
@@ -221,9 +226,11 @@ async function newPage(context) {
 }
 
 async function createPage(context, titulo, descripcion) {
+    const descriptionFieldName = version ? '.koenig-react-editor' : '.koenig-editor'
+
     await selectComponent(context, 'textarea[placeholder="Page title"]').setValue(titulo);
     await wait(1);
-    const element = await selectComponent(context, '.koenig-react-editor')
+    const element = await selectComponent(context, descriptionFieldName)
     await element.click();
     await wait(1);
     await element.setValue(descripcion);
@@ -493,8 +500,11 @@ Then('Admin visualizes {string} page', async function (pageUrl) {
 });
 
 Then('Admin sees {int} posts', async function (total) {
-    const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
-    const items = await div.$$('div.gh-posts-list-item-group');
+    const fatherItemComponent = version ? 'div.posts-list.gh-list.feature-memberAttribution' : 'ol.posts-list.gh-list'
+    const childItemComponent = version ? 'div.gh-posts-list-item-group' : 'li.gh-list-row.gh-posts-list-item'
+
+    const fatherComponent = await selectComponent(this, fatherItemComponent);
+    const items = await fatherComponent.$$(childItemComponent);
     assert.equal(items.length, total);
 });
 
@@ -505,7 +515,10 @@ Then('Admin sees {int} tags', async function (total) {
 });
 
 Then('Admin sees {int} pages', async function (total) {
-    const div = await selectComponent(this, 'div.posts-list.gh-list.feature-memberAttribution');
-    const items = await div.$$('div.gh-posts-list-item-group');
+    const fatherItemComponent = version ? 'div.posts-list.gh-list.feature-memberAttribution' : 'ol.gh-list'
+    const childItemComponent = version ? 'div.gh-posts-list-item-group' : 'li.gh-list-row.gh-posts-list-item'
+
+    const fatherComponent = await selectComponent(this, fatherItemComponent);
+    const items = await fatherComponent.$$(childItemComponent);
     assert.equal(items.length, total);
 });
