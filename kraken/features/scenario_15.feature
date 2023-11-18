@@ -3,7 +3,8 @@ Feature: Scenario 15
   @user1 @web
   Scenario: admin create a new page and list pages
     Given Admin starts app
-    When Admin navigates to "/pages" page
+    When Bot sets 15 scenario
+    And Admin navigates to "/pages" page
     And I wait for 2 seconds
     Then Admin sees 0 pages
     When Admin click on New Page
