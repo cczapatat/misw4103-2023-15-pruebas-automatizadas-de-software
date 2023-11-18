@@ -3,7 +3,8 @@ Feature: Scenario 2
   @user1 @web
   Scenario: admin create a new post, publish with schedule and filter
     Given Admin starts app
-    When Admin navigates to "/posts" page
+    When Bot sets 5 scenario
+    And Admin navigates to "/posts" page
     And I wait for 2 seconds
     Then Admin sees 0 posts
     When Admin clicks to new Post
