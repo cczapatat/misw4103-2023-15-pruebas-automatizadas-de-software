@@ -11,7 +11,9 @@
 
 ## Evidencias Reportes
 
-[Link](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EnUNGiY18TlHggg4oBkc2o0B9Ac1OewDzjArNLharPirXg?e=aVX2by)
+[Link Semana 5](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EnUNGiY18TlHggg4oBkc2o0B9Ac1OewDzjArNLharPirXg?e=aVX2by)
+
+[Link Semana 6](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EtNqBJCW8UxCrJRyCIidgUcBfv7fJsM4KGApa4DDwOPU6Q?e=YCkAHl)
 
 ## Instrucciones
 
@@ -23,38 +25,24 @@ Estos requisitos son aplicables a los escenarios de ambos proyectos (Kraken y Cy
 
 * Se requiere tener NodeJs y NPM instalados, aquí recomendamos utilizar [NVM](https://github.com/nvm-sh/nvm), ya que cada proyecto usa una versión diferente de NodeJs.
 
-* Se requiere contar con el aplicativo Ghost en la versión **5.68.0** instalado de forma local.
+* Se requiere contar con el aplicativo Ghost en las siguientes versiones **5.68.0** y **5.8.0**.
 
 ```bash
-ghost install 5.68.0 --local
+docker run -d -e url=http://localhost:3100 -p 3100:2368 --name ghost_5.8 ghost:5.8
 ```
-
-*Si no cuenta con Ghost-Cli instalado puede correr el siguiente comando.*
 
 ```bash
-npm install ghost-cli@latest -g
+docker run -d --name ghost_5.68.0 -e NODE_ENV=development -e url=http://localhost:2368 -p 2368:2368 ghost:5.68.0
 ```
 
-*Para mayor información sobre como instalar Ghost local puede utilizar la siguiente guia*
-
-[Guia](https://thesoftwaredesignlab.github.io/AutTestingCodelabs/ghost-local-deployment/index.html#0)
-
-* Iniciar Ghost de forma local
-
-```bash
-ghost start
-```
-
-* Verificar Ghost, al correr el siguiente comando debe observar una tabla en la cual esta la URL donde el aplicativo quedo ejecutandose.
-
-```bash
-ghost ls
-```
-
-* Ingresar a la URL donde está ejecutandose Ghost y al final de la URL escribir **/ghost**, lo cual es la vista como administrador.
+* Ingresar a cada URL donde está ejecutandose Ghost y al final de la URL escribir **/ghost**, lo cual es la vista como administrador.
 
 ```sh
 http://localhost:2368/ghost
+```
+
+```sh
+http://localhost:3100/ghost
 ```
 
 * Utilice esta misma URL y ajustela en los archivos de configuración de cada proyectos *cypress.config.js* y *kraken.config.js*
@@ -70,6 +58,10 @@ http://localhost:2368/ghost
 }
 ```
 
+* Posterior a la instalación de Ghost podra ir a los diferentes aplicativos de Cypress y Kraken, en los cuales encontrará dos posibles comandos uno para cada versión de ghost y sistema operativo.
+* * Los comandos terminados en **:new** hacen referencia al versión de Ghost **5.68.0**
+* * Los comandos terminados en **:old** hacen referencia al versión de Ghost **5.8.0**
+
 ### Correr pruebas Cypress
 
 #### Requisitos
@@ -80,7 +72,7 @@ http://localhost:2368/ghost
 
 #### Pasos
 
-* Ubicarse en la carpte de *cypress*
+* Ubicarse en la carpeta de *cypress*
 
 ```sh
 cd cypress
@@ -110,16 +102,28 @@ npm install
 
 ##### Ejecución proyecto Cypress
 
-###### Modo headless
-
-```bash
-npx cypress run --browser chrome
-```
-
 ###### Modo interactivo
 
+Lista de comandos:
+
+Unix
+
 ```bash
-cypress open
+npm run cypressos:new
+```
+
+```bash
+npm run cypressos:old
+```
+
+Windows
+
+```bash
+npm run cypresswin:new
+```
+
+```bash
+npm run cypresswin:old
 ```
 
 * Seleccionar E2E
@@ -152,7 +156,7 @@ cypress open
 
 #### Pasos
 
-* Ubicarse en la carpte de *kraken*
+* Ubicarse en la carpeta de *kraken*
 
 ```sh
 cd kraken
@@ -200,31 +204,163 @@ npx kraken-node doctor
 
 * Ejecutar escenarios de prueba
 
-Aquí se propone varios comandos alternativos.
+Lista de comandos:
 
-Si esta en una terminal unix, puede ejecutar:
+Unix
 
 ```bash
-npm run krakenos
+npm run krakenos:new
 ```
 
-Si esta en una terminal windows, puede ejecutar:
+```bash
+npm run krakenos:old
+```
+
+Windows
 
 ##### Consideraciones
 
 **Para la ejecución en windows dentro de la carpeta features solo se debe tener un archivo con extensión .feature, y solo un feature dentro del mismo archivo**
 
 ```bash
-npm run krakenwin
+npm run krakenwin:new
 ```
+
+```bash
+npm run krakenwin:old
+```
+
 **Para la ejecución de multiples archivos scenario_X.feature en WINDOWS se DEBE ejecutar el siguiente commando que actualiza los nombres de los archivos .feature y se ejecute el commando krakenwin por cada archivo .feature. Si se presenta algún error o cancela el comando, los archivos quedaran renombrados con .featured y sera necesario renombrarlos a su nombre inicial**
 
 ```bash
-npm run krakenwinmulti
+npm run krakenwinmulti:new
 ```
 
-Además puede ejecutar, en cualquier tipo de terminal:
+```bash
+npm run krakenwinmulti:old
+```
+
+### VRT
+
+### Correr Backstop
+
+#### Requisitos
+
+* NodeJs en versión **16.20.2**
+* NPM en versión **8.19.4**
+
+#### Pasos
+
+* Ubicarse en la carpeta de *backstop*
+
+```sh
+cd backstop
+```
+
+* Instalar node en la versión **16.20.2**
 
 ```bash
-npx kraken-node run
+nvm install 16.20.2
+```
+
+```bash
+nvm use 16.20.2
+```
+
+* Instalar Kraken de forma global
+
+```bash
+npm install -g backstopjs
+```
+
+* Ejecutar uno de los siguientes comandos de acuerdo al sistema operativo.
+
+Unix
+
+* * Generar imagen referencia
+
+```bash
+npm run backstopos:ref
+```
+
+* * Generar imagen comparación
+
+```bash
+npm run backstopos:test
+```
+
+* * Puede también ejecutar ambos comandos solo corriendo.
+
+```bash
+npm run backstopos
+```
+
+Windows
+
+* * Generar imagen referencia
+
+```bash
+npm run backstopwin:ref
+```
+
+* * Generar imagen comparación
+
+```bash
+npm run backstopwin:test
+```
+
+* * Puede también ejecutar ambos comandos solo corriendo.
+
+```bash
+npm run backstopwin
+```
+
+* Al finalizar los comandos sino se visualiza el reporte directo en el navegador puede desplegar el archivo de la ruta
+
+```sh
+backstop/backstop_data/html_report/index.html
+```
+
+### Correr Resemblejs
+
+#### Requisitos
+
+* NodeJs en versión **18.18.2**
+* NPM en versión **9.8.1**
+* Haber ejecutado el proyecto Cypress en ambas versiones (**new** y **old**)
+
+#### Pasos
+
+* Ubicarse en la carpeta de *cypress*
+
+```sh
+cd cypress
+```
+
+* Instalar node en la versión **18.18.2**
+
+```bash
+nvm install 18.18.2
+```
+
+```bash
+nvm use 18.18.2
+```
+
+* Instalar dependencias
+
+```bash
+npm install
+```
+
+* Ejecutar resembleJs.
+
+```bash
+npm run resemble:run
+```
+
+* Al finalizar deberá desplegar el archivo que esta en la siguiente ruta
+
+```sh
+cypress/vrt/results/report.html
 ```

@@ -60,3 +60,10 @@ Thumbs.db
 /cypress/vrt
 /cypress/vrt/results
 /cypress/vrt/results/*
+
+/backstop/backstop_data/bitmaps_reference
+/backstop/backstop_data/bitmaps_reference/*
+/backstop/backstop_data/bitmaps_test
+/backstop/backstop_data/bitmaps_test/*
+/backstop/backstop_data/html_report
+/backstop/backstop_data/html_report/*

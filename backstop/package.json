@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "backstopos:ref": "CMD=ref backstop reference",
+    "backstopos:test": "CMD=test backstop test",
+    "backstopos": "npm run backstopos:ref && npm run backstopos:test",
+    "backstopwin:ref": "set CMD=ref && backstop reference",
+    "backstopwin:test": "set CMD=test && backstop test",
+    "backstopwin": "npm run backstopwin:ref && npm run backstopwin:test"
+  }
+}
