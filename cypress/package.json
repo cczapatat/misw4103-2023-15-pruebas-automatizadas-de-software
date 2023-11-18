@@ -8,6 +8,7 @@
     "cypressos:new": "VERSION=5.68.0 cypress open",
     "cypressos:old": "VERSION=5.8.0 cypress open",
     "cypresswin:new": "set VERSION=5.68.0 && cypress open",
-    "cypresswin:old": "set VERSION=5.8.0 && cypress open"
+    "cypresswin:old": "set VERSION=5.8.0 && cypress open",
+    "resemble:run": "node indexvrt.js"
   }
 }
