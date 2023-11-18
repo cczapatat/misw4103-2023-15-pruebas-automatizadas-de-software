@@ -12,7 +12,7 @@ async function executeTest(){
     let resultInfo = {}
     let datetime = new Date().toISOString().replace(/:/g,".");
 
-    for (let i = 6; i <= 20; i++) {
+    for (let i = 2; i <= 10; i++) {
         for (let j = 0; j<=20; j++) {
             if (!fs.existsSync(`./vrt/results/${datetime}`)){
                 fs.mkdirSync(`./vrt/results/${datetime}`, { recursive: true });
@@ -41,7 +41,9 @@ async function executeTest(){
                     rawMisMatchPercentage: data.rawMisMatchPercentage,
                     misMatchPercentage: data.misMatchPercentage,
                     diffBounds: data.diffBounds,
-                    analysisTime: data.analysisTime
+                    analysisTime: data.analysisTime,
+                    filePathOld: `scenario_${i}_${j}_old.png`,
+                    filePathNew: `scenario_${i}_${j}_new.png`
                 }
                 fs.writeFileSync(`./vrt/results/${datetime}/compare-scenario_${i}_${j}.png`, data.getBuffer());
             }
@@ -56,7 +58,11 @@ async function executeTest(){
     
     fs.writeFileSync(`./vrt/results/${datetime}/report.html`, createReport(datetime, resultInfo));
     fs.copyFileSync('./index.css', `./vrt/results/${datetime}/index.css`);
+    // copy old and new
+    const sourceDirectory = './cypress/screenshots';
+    const destinationDirectory = `./vrt/results/${datetime}`;
 
+    copyFiles(sourceDirectory, destinationDirectory);
     console.log('------------------------------------------------------------------------------------')
     console.log("Execution finished. Check the report under the results folder")
     return resultInfo;  
@@ -72,11 +78,11 @@ function browser(b, info){
     <div class="imgline">
       <div class="imgcontainer">
         <span class="imgname">Reference</span>
-        <img class="img2" src="before-${b}.png" id="refImage" label="Reference">
+        <img class="img2" src="${info.filePathOld}" id="refImage" label="Reference">
       </div>
       <div class="imgcontainer">
         <span class="imgname">Test</span>
-        <img class="img2" src="after-${b}.png" id="testImage" label="Test">
+        <img class="img2" src="${info.filePathNew}" id="testImage" label="Test">
       </div>
     </div>
     <div class="imgline">
@@ -111,4 +117,27 @@ function createReport(datetime, resInfo){
             </div>
         </body>
     </html>`
+}
+
+function copyFiles(sourceDir, destinationDir) {
+  fs.readdir(sourceDir, (err, files) => {
+    if (err) {
+      console.error('Error reading source directory:', err);
+      return;
+    }
+
+    files.forEach((file) => {
+      const sourcePath = path.join(sourceDir, file);
+      const destinationPath = path.join(destinationDir, file);
+
+      fs.copyFile(sourcePath, destinationPath, (err) => {
+        if (err) {
+          console.error('Error copying file:', err);
+          return;
+        }
+
+        console.log(`Copied ${sourcePath} to ${destinationPath}`);
+      });
+    });
+  });
 }
