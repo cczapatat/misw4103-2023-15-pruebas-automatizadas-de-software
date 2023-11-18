@@ -11,6 +11,8 @@
 
 ## Evidencias Reportes
 
+[Video](https://uniandes-my.sharepoint.com/:v:/g/personal/c_zapatat_uniandes_edu_co/EX9CekpxZoxGnh_jmBUBuKEBnTIG6AEukxO4ySjG_0G7Ig?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=aYIKfY)
+
 [Link Semana 5](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EnUNGiY18TlHggg4oBkc2o0B9Ac1OewDzjArNLharPirXg?e=aVX2by)
 
 [Link Semana 6](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EtNqBJCW8UxCrJRyCIidgUcBfv7fJsM4KGApa4DDwOPU6Q?e=YCkAHl)
