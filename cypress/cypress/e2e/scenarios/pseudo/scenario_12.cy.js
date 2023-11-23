@@ -25,9 +25,10 @@ describe('ghost admins posts scenario 12', () => {
 
       let tagName;
       let desc;
+      let title;
+      let description;
       beforeEach(() => {
-        const title = faker.person.jobTitle();
-        const description = faker.lorem.paragraph(2);
+
         cy.mockarooTag().then((response) => {
           expect(response.status).to.eq(200); 
           const data = response.body;
@@ -38,13 +39,19 @@ describe('ghost admins posts scenario 12', () => {
           cy.wait(500);
           //cy.listTagsAndCheck(tagName);
           cy.listPost();
+        });
+        cy.mokarooPost().then((response) => {
+          expect(response.status).to.eq(200); 
+          const data = response.body;
+          title = data[0].title;
+          description = data[0].description;
           cy.newPost();
           cy.createPost(title, description);
           cy.wait(500);
           cy.addTagToPost(tagName);
           cy.publishPost();
           cy.listPostAndCheck(title);
-        })    
+        })  
       });
 
       it('Then admin sees one post from list post by tag', () => {

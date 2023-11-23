@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 
 describe('ghost admins page scenario 23', () => {
   const email = Cypress.env('email');
@@ -21,27 +22,20 @@ describe('ghost admins page scenario 23', () => {
     });
 
     context('When admin create two pages, list  pages', () => {
-      let title;
-      let description;
-      let titleTwo;
-      let descriptionTwo;
+      const title = faker.person.jobTitle();
+      const description = faker.lorem.paragraph(2);
+      const titleTwo = faker.person.jobTitle();
+      const descriptionTwo = faker.lorem.paragraph(2);
+
       beforeEach(() => {
-        cy.mockarooPage().then((response) => {
-          expect(response.status).to.eq(200); 
-          const data = response.body;
-          title = data[0].title;
-          description = data[0].description;
           cy.newPage();
           cy.createPage(title, description);
           cy.publishPage();
           cy.listPages();
-          titleTwo = data[1].title;
-          descriptionTwo = data[1].description;
           cy.newPage();
           cy.createPage(titleTwo, descriptionTwo);
           cy.publishPage();
-          cy.listPages();
-        })      
+          cy.listPages();   
       });
 
       it('Then admin sees two pages', () => {

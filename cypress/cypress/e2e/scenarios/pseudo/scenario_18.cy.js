@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 describe('ghost admins pages scenario 18', () => {
   const email = Cypress.env('email');
   const password = Cypress.env('password');

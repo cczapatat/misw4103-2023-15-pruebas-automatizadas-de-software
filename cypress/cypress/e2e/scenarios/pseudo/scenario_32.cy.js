@@ -1,14 +1,11 @@
-
-describe('ghost admin member scenario 27', () => {
+describe('ghost admin member scenario 32', () => {
 
  
 	const email = Cypress.env('email')
 	const password = Cypress.env('password')
-    let tagName = new String();
-    let desc = new String();
 
     before(()=>{
-        cy.start('scenario_27');
+        cy.start('scenario_32');
         cy.login(email, password)
         cy.deleteAll();
         cy.goToDashboard();
@@ -25,10 +22,11 @@ describe('ghost admin member scenario 27', () => {
             cy.listMembers();
         })
 
-        context('When admin creates a member without email and try to save', () => {
+        context('When admin creates a member and list members and delete member', () => {
             let memberName;
             let memberEmail;
             let memberNote;
+
             beforeEach(() => {
                 cy.mockarooMember().then((response) => {
                     expect(response.status).to.eq(200); 
@@ -37,11 +35,15 @@ describe('ghost admin member scenario 27', () => {
                     memberEmail = data[0].email;
                     memberNote = data[0].note;
                     cy.createNewMember();
-                    cy.createMemberNoEmail(memberName, memberNote);
+                    cy.createMember(memberName, memberEmail, memberNote);
+                    cy.listMembers();
+                    cy.clickMemberByEmail(memberEmail);
+                    cy.deleteMember();
+                    cy.searchMemberByName(memberName);
                   })     
             })
-            it('Then admin sees error in Member', () => {
-               cy.contains("Please enter an email")
+            it('Then admin not see the member', () => {
+               cy.validateNoMemberseudo();
             }) 
         })	
 	})

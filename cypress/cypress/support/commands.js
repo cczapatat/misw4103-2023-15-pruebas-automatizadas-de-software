@@ -789,11 +789,11 @@ Cypress.Commands.add('createNewMember', () => {
 })
 
 Cypress.Commands.add('createMember', (name, email, note) => {
-    cy.get('input[id="member-name"]').type(name)
+    cy.get('textarea[id="member-note"]').type(note)
+    cy.wait(200)
+    cy.get('input[id="member-name"]').type(name + '{enter}')
     cy.wait(200)
     cy.get('input[id="member-email"]').type(email)
-    cy.wait(200)
-    cy.get('textarea[id="member-note"]').type(note)
     cy.wait(200)
     cy.screenshot(getNamePhoto())
     cy.contains('Save').click()
@@ -802,7 +802,7 @@ Cypress.Commands.add('createMember', (name, email, note) => {
 })
 
 Cypress.Commands.add('createMemberNoEmail', (name, note) => {
-    cy.get('input[id="member-name"]').type(name)
+    cy.get('input[id="member-name"]').type(name + '{enter}')
     cy.wait(200)
     cy.get('textarea[id="member-note"]').type(note)
     cy.wait(200)
@@ -837,3 +837,32 @@ Cypress.Commands.add('createTagColor', (name, desc, color) => {
     cy.wait(1000)
     cy.screenshot(getNamePhoto())
 })
+
+Cypress.Commands.add('searchMemberByName', (name) => {
+    cy.get('input[data-test-input="members-search"]').type(name)
+    cy.wait(500)
+    cy.screenshot(getNamePhoto())
+})
+
+
+Cypress.Commands.add('clickMemberByEmail', (email) => {
+    cy.contains(email).click()
+    cy.wait(500)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add('deleteMember', () => {
+    cy.get('button[data-test-button="member-actions"]').click()
+    cy.wait(500)
+    cy.contains('Delete member').click({force:true})
+    cy.wait(500)
+    cy.get('button[data-test-button="confirm"]').click({force: true})
+    cy.wait(500)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add("validateNoMemberseudo", (name) => {
+    cy.get(".gh-members-empty").should("exist");
+    cy.wait(500);
+    cy.screenshot(getNamePhoto());
+});

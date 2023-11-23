@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 
 describe('ghost admins posts scenario 21', () => {
   const email = Cypress.env('email');
@@ -21,28 +22,21 @@ describe('ghost admins posts scenario 21', () => {
     });
 
     context('When admin create two post, list  posts', () => {
-      let title;
-      let description;
-      let titleTwo;
-      let descriptionTwo;
+      const title = faker.person.jobTitle();
+      const description = faker.lorem.paragraph(2);
+      const titleTwo = faker.person.jobTitle();
+      const descriptionTwo = faker.lorem.paragraph(2);
+
       beforeEach(() => {
-        cy.mokarooPost().then((response) => {
-          expect(response.status).to.eq(200); 
-          const data = response.body;
-          title = data[0].title;
-          description = data[0].description;
-          cy.validateNotExistItems()
-          cy.newPost();
-          cy.createPost(title, description);
-          cy.publishPost();
-          cy.listPost();
-          titleTwo = data[1].title;
-          descriptionTwo = data[1].description;
-          cy.newPost();
-          cy.createPost(titleTwo, descriptionTwo);
-          cy.publishPost();
-          cy.listPost();
-        })
+        cy.validateNotExistItems()
+        cy.newPost();
+        cy.createPost(title, description);
+        cy.publishPost();
+        cy.listPost();
+        cy.newPost();
+        cy.createPost(titleTwo, descriptionTwo);
+        cy.publishPost();
+        cy.listPost();
       });
 
       it('Then admin sees the two posts', () => {

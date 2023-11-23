@@ -1,4 +1,3 @@
-import {faker} from '@faker-js/faker';
 
 describe('ghost admin tags scenario 10', () => {
 

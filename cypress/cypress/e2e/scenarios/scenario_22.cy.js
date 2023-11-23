@@ -1,3 +1,4 @@
+import {faker} from '@faker-js/faker';
 
 describe('ghost admin tags scenario 22', () => {
 
@@ -6,6 +7,8 @@ describe('ghost admin tags scenario 22', () => {
 	const password = Cypress.env('password')
     let tagName = new String();
     let desc = new String();
+    let tagNameTwo = new String();
+    let descTwo = new String();
 
     before(()=>{
         cy.start('scenario_22');
@@ -26,25 +29,17 @@ describe('ghost admin tags scenario 22', () => {
         })
 
         context('When admin creates two public tag list tag', () => {
-            let tagName;
-            let desc;
-            let tagNameTwo;
-            let descTwo;
             beforeEach(() => {
-                cy.mockarooTag().then((response) => {
-                    expect(response.status).to.eq(200); 
-                    const data = response.body;
-                    tagName = data[0].title;
-                    desc = data[0].description;
-                    cy.createNewTag();
-                    cy.createTag(tagName, desc);
-                    cy.listTags();
-                    tagNameTwo = data[1].title;
-                    descTwo = data[1].description;
-                    cy.createNewTag();
-                    cy.createTag(tagNameTwo, descTwo);
-                    cy.listTags();
-                  })     
+                tagName = faker.lorem.word();
+                desc = faker.lorem.paragraphs(1);
+                tagNameTwo = faker.lorem.word();
+                descTwo = faker.lorem.paragraphs(1);
+                cy.createNewTag();
+                cy.createTag(tagName, desc);
+                cy.listTags();
+                cy.createNewTag();
+                cy.createTag(tagNameTwo, descTwo);
+                cy.listTags();    
             })
             it('Then admin sees Two Tag', () => {
                cy.validateQuantityTags(2);

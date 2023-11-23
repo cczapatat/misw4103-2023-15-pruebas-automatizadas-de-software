@@ -1,5 +1,3 @@
-import {faker} from '@faker-js/faker';
-
 
 describe('ghost admin tags scenario 13', () => {    
 	const name = Cypress.env('name')
