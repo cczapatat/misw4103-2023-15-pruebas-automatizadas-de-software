@@ -736,3 +736,133 @@ Cypress.Commands.add('validateScenarioTwenty', (title) => {
     cy.url().should('include', 'editor/page');
     cy.screenshot(getNamePhoto());
 });
+
+Cypress.Commands.add("mockarooPage", () => {
+  return cy.request("https://my.api.mockaroo.com/mokarooPage?key=c632cec0");
+});
+
+Cypress.Commands.add("mokarooPost", () => {
+  return cy.request("https://my.api.mockaroo.com/mokarooPost?key=c632cec0");
+});
+
+Cypress.Commands.add("mockarooTag", () => {
+  return cy.request("https://my.api.mockaroo.com/mockarooTag?key=c632cec0");
+});
+
+Cypress.Commands.add("mockarooMember", () => {
+  return cy.request("https://my.api.mockaroo.com/mockarooMember?key=c632cec0");
+});
+
+Cypress.Commands.add("validateNoPostPseudo", (title) => {
+  cy.get(".view-container.content-list").should("not.include.text", title);
+  cy.wait(500);
+  cy.screenshot(getNamePhoto());
+});
+
+Cypress.Commands.add("validateNoPagePseudo", (title) => {
+  cy.get(".view-container.content-list").should("not.include.text", title);
+  cy.wait(500);
+  cy.screenshot(getNamePhoto());
+});
+
+Cypress.Commands.add("validateNoTagPseudo", (name) => {
+  cy.get(".view-container.content-list").should("not.include.text", name);
+  cy.wait(500);
+  cy.screenshot(getNamePhoto());
+});
+
+Cypress.Commands.add('validateQuantityTags', (number) => {
+    cy.listTags();
+    cy.wait(1000);
+    cy.get('li.gh-list-row.gh-tags-list-item').then(($tags) => {
+        expect($tags.length).to.equal(number)
+    });
+    cy.screenshot(getNamePhoto());
+})
+
+Cypress.Commands.add('createNewMember', () => {
+    cy.contains('New member').click()
+    cy.wait(1000)
+    cy.url().should('include', 'members/new')
+    cy.wait(1000)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add('createMember', (name, email, note) => {
+    cy.get('textarea[id="member-note"]').type(note)
+    cy.wait(200)
+    cy.get('input[id="member-name"]').type(name + '{enter}')
+    cy.wait(200)
+    cy.get('input[id="member-email"]').type(email)
+    cy.wait(200)
+    cy.screenshot(getNamePhoto())
+    cy.contains('Save').click()
+    cy.wait(1000)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add('createMemberNoEmail', (name, note) => {
+    cy.get('input[id="member-name"]').type(name + '{enter}')
+    cy.wait(200)
+    cy.get('textarea[id="member-note"]').type(note)
+    cy.wait(200)
+    cy.screenshot(getNamePhoto())
+    cy.contains('Save').click()
+    cy.wait(1000)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add('listMembers', () => {
+    cy.visit('/ghost/#/members')
+    cy.wait(1000)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add('validateMembersQuantity', (number) => {
+    cy.listMembers();
+    cy.wait(1000);
+    cy.get('tr.members-list-item').then(($members) => {
+        expect($members.length).to.equal(number)
+    });
+    cy.screenshot(getNamePhoto());
+})
+
+Cypress.Commands.add('createTagColor', (name, desc, color) => {
+    cy.get('textarea[id="tag-description"]').type(desc)
+    cy.wait(100)
+    cy.get('input[data-test-input="accentColor"]').type(color)
+    cy.wait(300)
+    cy.screenshot(getNamePhoto())
+    cy.contains('Save').click()
+    cy.wait(1000)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add('searchMemberByName', (name) => {
+    cy.get('input[data-test-input="members-search"]').type(name)
+    cy.wait(500)
+    cy.screenshot(getNamePhoto())
+})
+
+
+Cypress.Commands.add('clickMemberByEmail', (email) => {
+    cy.contains(email).click()
+    cy.wait(500)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add('deleteMember', () => {
+    cy.get('button[data-test-button="member-actions"]').click()
+    cy.wait(500)
+    cy.contains('Delete member').click({force:true})
+    cy.wait(500)
+    cy.get('button[data-test-button="confirm"]').click({force: true})
+    cy.wait(500)
+    cy.screenshot(getNamePhoto())
+})
+
+Cypress.Commands.add("validateNoMemberseudo", (name) => {
+    cy.get(".gh-members-empty").should("exist");
+    cy.wait(500);
+    cy.screenshot(getNamePhoto());
+});
