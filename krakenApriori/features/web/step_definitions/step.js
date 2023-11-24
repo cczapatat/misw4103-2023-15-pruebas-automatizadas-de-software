@@ -1,5 +1,5 @@
 const { assert } = require('chai');
-const { faker } = require('@faker-js/faker');
+const { faker } = require('@faker-js/faker'); // TODO Eliminar.
 const { Given, When, Then, After, Before } = require('@cucumber/cucumber');
 
 const configProperties = require('../../../kraken.config');
@@ -24,9 +24,11 @@ const getNamePhoto = () => {
     return title;
 }
 
-function selectComponent(context, componentDetails) {
-    context.driver.$(componentDetails).waitForExist(5000);
-    context.driver.$(componentDetails).waitForDisplayed(5000);
+function selectComponent(context, componentDetails, needAwait = true) {
+    if (needAwait) {
+        context.driver.$(componentDetails).waitForExist(5000);
+        context.driver.$(componentDetails).waitForDisplayed(5000);
+    }
 
     return context.driver.$(componentDetails);
 }
@@ -140,28 +142,26 @@ async function createPost(context, title, description) {
     await context.driver.saveScreenshot(getNamePhoto());
 }
 
-async function editPost(context, title, description) {
-    await selectComponent(context, 'textarea[placeholder="Post title"]').setValue(title);
-    const element = await selectComponent(context, '.koenig-react-editor');
-    await element.click();
-    await wait(1);
-    await element.setValue(description);
+async function publishPost(context, total) {
+    const btnPublish = await selectComponent(context, 'span=Publish', total > 0);
 
-    await selectComponent(context, 'span=Update').click();
-    await wait(1);
-    await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-publishmenu-button.gh-btn-icon.ember-view').click();
-}
+    if (total > 0) {
+        assert.exists(btnPublish.elementId);
+        assert.notExists(btnPublish.error);
+    } else {
+        assert.exists(btnPublish.error);
+        assert.notExists(btnPublish.elementId);
+    }
 
-async function publishPost(context) {
-    await selectComponent(context, 'span=Publish').click();
-    await wait(1);
-    await context.driver.saveScreenshot(getNamePhoto());
-    await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
-    await wait(1);
-    await context.driver.saveScreenshot(getNamePhoto());
-    await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
-    await wait(1);
-    await context.driver.saveScreenshot(getNamePhoto());
+    if (btnPublish.elementId && !btnPublish.error) {
+        btnPublish.click();
+        await wait(1);
+        await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
+        await wait(1);
+        await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+        await wait(1);
+        await context.driver.saveScreenshot(getNamePhoto());
+    }
 }
 
 async function schedulePost(context) {
@@ -393,27 +393,42 @@ Given('Admin starts app', async function () {
     assert.isTrue(currentPage.includes('ghost/#/dashboard'));
 });
 
-When('Admin navigates to {string} page', async function (pageUrl) {
+async function navigateTo(context, pageUrl) {
     const newUrl = pageUrl[0] === '/' ? pageUrl.substring(1) : pageUrl;
-    await this.driver.url(`${URL_BASE}/${newUrl}`);
+    await context.driver.url(`${URL_BASE}/${newUrl}`);
     await wait(1);
-    await this.driver.saveScreenshot(getNamePhoto());
+}
+
+When('Admin navigates to {string} page', async function (pageUrl) {
+    await navigateTo(this, pageUrl);
 });
+
+When('Admin navigates to {string} page and expected total {int}', async function (pageUrl, total) {
+    await navigateTo(this, pageUrl);
+
+    if (total <= 0) {
+        const btnLeave = await selectComponent(this, 'span=Leave', false);
+
+        if (btnLeave.elementId) {
+            btnLeave.click();
+        }
+    }
+})
 
 When('Admin clicks to new Post', async function () {
     await newPost(this);
 });
 
-When('Admin creates new Post', async function () {
-    await createPost(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
+When('Admin creates new Post with title {string} and description {string}', async function (title, description) {
+    await createPost(this, title, description);
 });
 
 When('Admin publishes tag', async function () {
     await publishTag(this);
 });
 
-When('Admin publishes post', async function () {
-    await publishPost(this);
+When('Admin publishes post when total is {int}', async function (total) {
+    await publishPost(this, total);
 });
 
 When('Admin schedules post', async function () {
@@ -574,14 +589,20 @@ When('Bot sets {int} scenario', async function (total) {
     counter = 0;
 });
 
-Then('Admin sees {int} posts', async function (total) {
+Then('Admin sees {int} posts with title {string}', async function (total, title) {
     const fatherItemComponent = version ? 'div.posts-list.gh-list.feature-memberAttribution' : 'ol.posts-list.gh-list';
     const childItemComponent = version ? 'div.gh-posts-list-item-group' : 'li.gh-list-row.gh-posts-list-item';
 
     const fatherComponent = await selectComponent(this, fatherItemComponent);
     const items = await fatherComponent.$$(childItemComponent);
-
     assert.equal(items.length, total);
+
+
+    if (total > 0) {
+        const titlePost = await selectComponent(this, `h3=${title}`);
+        assert.exists(titlePost);
+    }
+
     await this.driver.saveScreenshot(getNamePhoto());
 });
 
