@@ -409,6 +409,45 @@ async function navigateTo(context, pageUrl) {
     await wait(1);
 }
 
+async function createNewMember(context, name, email, note) {
+    await selectComponent(context, 'textarea[id="member-note"]').setValue(note);
+    await wait(1);
+    await selectComponent(context, 'input[id="member-name"]').setValue(name);
+    await wait(1);
+    await selectComponent(context, 'input[id="member-email"]').setValue(email);
+    lastCreatedEmail = email;
+    await wait(1);
+    await selectComponent(context, 'span=Save').click();
+    await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
+}
+
+async function createMember(context) {
+    await selectComponent(context, 'span=New member').click();
+
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('/members/new'));
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
+}
+
+async function containLastEmail(context) {
+    const component = await selectComponent(context, `.gh-members-list-email`);
+    const text = await component.getText();
+    assert.equal(text, lastCreatedEmail); 
+}
+
+async function deleteMember(context) {
+    await selectComponent(context, 'a.ember-view.gh-list-data').click();
+    await wait(1);
+    await selectComponent(context, 'button.gh-btn.gh-btn-icon.icon-only.gh-btn-action-icon.closed.ember-view').click();
+    await wait(1);
+    await selectComponent(context, 'button=Delete member').click();
+    await wait(1);
+    await selectComponent(context, 'button.gh-btn.gh-btn-red.gh-btn-icon.ember-view').click();
+    await wait(0.5);
+}
+
 When('Admin navigates to {string} page', async function (pageUrl) {
     await navigateTo(this, pageUrl);
 });
@@ -656,4 +695,36 @@ Then('Admin sees {int} pages with title {string}', async function (total, title)
     }
 
     await this.driver.saveScreenshot(getNamePhoto());
+});
+
+When('Admin creates a new member with name {string}, email {string} and note {string}', async function (memberName, memberEmail, memberNote) {
+    await createNewMember(this, memberName, memberEmail, memberNote);
+});
+
+When('Admin clicks on new Member', async function () {
+    await createMember(this);
+});
+
+
+Then('Admin sees last created email', async function () {
+    await containLastEmail(this);
+});
+
+Then('Admin sees {int} members', async function (total) {
+    const tbody = await selectComponent(this, 'tbody.ember-view', total > 0);
+
+    if (total > 0) {
+        assert.exists(tbody.elementId);
+        assert.notExists(tbody.error);
+
+        const items = await tbody.$$('tr');
+        assert.equal(items.length, total);
+        await wait(1)
+        await this.driver.saveScreenshot(getNamePhoto());
+        
+        await deleteMember(this)
+    } else {
+        assert.exists(tbody.error);
+        assert.notExists(tbody.elementId);
+    }
 });
