@@ -577,8 +577,8 @@ When('Admin delete a Tag', async function () {
     await deleteTag(this);
 });
 
-When('Admin creates new Tag with {string}', async function (tag) {
-    await createTag(this, tag, faker.lorem.paragraph(2));
+When('Admin creates new Tag with name {string} and description {string}', async function (name, descripcion) {
+    await createTag(this, name, descripcion);
 });
 
 When('Admin adds tag {string} to post', async function (tag) {
