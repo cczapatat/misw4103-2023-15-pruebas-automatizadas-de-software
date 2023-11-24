@@ -12,6 +12,8 @@ const fs = require('fs');
 let escenario = 0
 let counter
 
+let lastCreatedEmail = '';
+
 const suffix =  configProperties.env.version ? 'new' : 'old'
 
 const getNamePhoto = () => {
@@ -57,6 +59,20 @@ async function backToEditorPage(context) {
     assert.isTrue(currentPage.includes('editor/page'));
 }
 
+async function hasExceededDescTagOnScreen(context) {
+    const errorMessage = await selectComponent(context, 'div.form-group.no-margin.error > p.response');
+    await wait(1)
+    assert.exists(errorMessage);
+}
+
+async function hasNoTagNameOnScreen(context) {
+    const selectedComponent = await selectComponent(context, 'p.response');
+    const errorContent = await selectedComponent.getText();
+    await wait(1)
+    assert.exists(selectedComponent);
+    assert.equal(errorContent, 'You must specify a name for the tag.');
+}
+
 async function addTagToPost(context, tag) {
     await selectComponent(context, 'button[title="Settings"]').click();
     await wait(1);
@@ -70,6 +86,39 @@ async function addTagToPost(context, tag) {
     await wait(1);
     await selectComponent(context, 'button[title="Settings"]').click();
     await wait(0.5);
+}
+
+async function containsSpan(context, value) {
+    const span = await selectComponent(context, `span=${value}`);
+    assert.exists(span);
+}
+
+async function containLastEmail(context) {
+    const component = await selectComponent(context, `.gh-members-list-email`);
+    const text = await component.getText();
+    assert.equal(text, lastCreatedEmail); 
+}
+
+async function createMember(context) {
+    await selectComponent(context, 'span=New member').click();
+
+    const currentPage = await context.driver.getUrl();
+    assert.isTrue(currentPage.includes('/members/new'));
+    await wait(1)
+    await context.driver.saveScreenshot(getNamePhoto());
+}
+
+async function createNewMember(context, name, email, note) {
+    await selectComponent(context, 'textarea[id="member-note"]').setValue(note);
+    await wait(1);
+    await selectComponent(context, 'input[id="member-name"]').setValue(name);
+    await wait(1);
+    await selectComponent(context, 'input[id="member-email"]').setValue(email);
+    lastCreatedEmail = email;
+    await wait(1);
+    await selectComponent(context, 'span=Save').click();
+    await wait(1);
+    await context.driver.saveScreenshot(getNamePhoto());
 }
 
 async function createNewTag(context) {
@@ -90,10 +139,16 @@ async function deleteTag(context) {
     await context.driver.saveScreenshot(getNamePhoto());
 }
 
-async function createTag(context, name, desc) {
+async function createTag(context, name, desc, color) {
     await selectComponent(context, 'input[id="tag-name"]').setValue(name);
     await wait(1);
     await selectComponent(context, 'textarea[id="tag-description"]').setValue(desc);
+
+    if(color) { 
+        await selectComponent(context, 'input[data-test-input="accentColor"]').setValue(color);
+        await wait(1);
+    }
+
     await selectComponent(context, 'span=Save').click();
     await wait(1);
     await context.driver.saveScreenshot(getNamePhoto());
@@ -426,6 +481,10 @@ When('Admin creates new Post', async function () {
     await createPost(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
 });
 
+When('Admin creates new Page', async function () {
+    await createPost(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
+});
+
 When('Admin publishes tag', async function () {
     await publishTag(this);
 });
@@ -562,6 +621,18 @@ When('Admin creates new Tag', async function () {
     await createTag(this, faker.person.jobTitle(), faker.lorem.paragraph(2));
 });
 
+When('Admin creates new Tag with long description', async function () {
+    await createTag(this, faker.person.jobTitle(), faker.lorem.words(150));
+});
+
+When('Admin creates new Tag with color and no-name', async function () {
+    tagName = "";
+    desc = faker.lorem.words(10);
+    color = faker.color.rgb({ casing: 'lower' }).substring(1)
+    await createTag(this, tagName, desc, color);
+});
+
+
 When('Admin delete a Tag', async function () {
     await deleteTag(this);
 });
@@ -576,6 +647,14 @@ When('Admin adds tag {string} to post', async function (tag) {
 
 When('Admin adds tag {string} to tag', async function (tag) {
     await addTagToPost(this, tag);
+});
+
+When('Admin sees 500-char error on tags', async function () {
+    await hasExceededDescTagOnScreen(this);
+});
+
+When('Admin sees no-tag-name error on tags', async function () {
+    await hasNoTagNameOnScreen(this);
 });
 
 When('Admin searches {string} and click on it', async function (value) {
@@ -622,4 +701,19 @@ Then('Admin sees {int} pages', async function (total) {
     assert.equal(items.length, total);
     await wait(1)
     await this.driver.saveScreenshot(getNamePhoto());
+});
+
+When('Admin clicks on new Member', async function () {
+    await createMember(this);
+});
+
+When('Admin creates a new member', async function () {
+    const memberName = faker.person.fullName();
+    const memberEmail = faker.internet.email().toLowerCase();
+    const memberNote = faker.company.buzzPhrase();
+    await createNewMember(this, memberName, memberEmail, memberNote);
+});
+
+Then('Admin sees last created email', async function () {
+    await containLastEmail(this);
 });
