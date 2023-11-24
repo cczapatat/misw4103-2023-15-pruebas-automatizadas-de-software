@@ -308,16 +308,26 @@ async function clickFirstPage(context) {
     await context.driver.saveScreenshot(getNamePhoto());
 }
 
-async function publishPage(context) {
-    await selectComponent(context, 'span=Publish').click();
-    await wait(1);
-    await context.driver.saveScreenshot(getNamePhoto());
-    await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
-    await wait(1);
-    await context.driver.saveScreenshot(getNamePhoto());
-    await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
-    await wait(1);
-    await context.driver.saveScreenshot(getNamePhoto());
+async function publishPage(context, total) {
+    const btnPublish = await selectComponent(context, 'span=Publish', total > 0);
+
+    if (total > 0) {
+        assert.exists(btnPublish.elementId);
+        assert.notExists(btnPublish.error);
+    } else {
+        assert.exists(btnPublish.error);
+        assert.notExists(btnPublish.elementId);
+    }
+
+    if (btnPublish.elementId && !btnPublish.error) {
+        btnPublish.click();
+        await wait(1);
+        await selectComponent(context, 'button.gh-btn.gh-btn-black.gh-btn-large').click();
+        await wait(1);
+        await selectComponent(context, 'button.gh-btn.gh-btn-large.gh-btn-pulse.ember-view').click();
+        await wait(1);
+        await context.driver.saveScreenshot(getNamePhoto());
+    }
 }
 
 async function schedulePage(context) {
@@ -497,6 +507,10 @@ When('Admin create a New Page', async function () {
     await createPage(this, title, description);
 });
 
+When('Admin create a New Page with title {string} and description {string}', async function (title, description) {
+    await createPage(this, title, description);
+});
+
 When('Admin create a New Page with title {string}', async function (title) {
     await createPage(this, title, faker.lorem.paragraphs(2));
 });
@@ -535,8 +549,8 @@ When('Admin filter internal tags', async function () {
     await listInternalTags(this);
 });
 
-When('Admin clicks to Publish page', async function () {
-    await publishPage(this);
+When('Admin publishes page when total is {int}', async function (total) {
+    await publishPage(this, total);
 });
 
 When('Admin clicks to delete page', async function () {
@@ -624,5 +638,22 @@ Then('Admin sees {int} pages', async function (total) {
 
     assert.equal(items.length, total);
     await wait(1)
+    await this.driver.saveScreenshot(getNamePhoto());
+});
+
+Then('Admin sees {int} pages with title {string}', async function (total, title) {
+    const fatherItemComponent = version ? 'div.posts-list.gh-list.feature-memberAttribution' : 'ol.posts-list.gh-list';
+    const childItemComponent = version ? 'div.gh-posts-list-item-group' : 'li.gh-list-row.gh-posts-list-item';
+
+    const fatherComponent = await selectComponent(this, fatherItemComponent);
+    const items = await fatherComponent.$$(childItemComponent);
+    assert.equal(items.length, total);
+
+
+    if (total > 0) {
+        const titlePost = await selectComponent(this, `h3=${title}`);
+        assert.exists(titlePost);
+    }
+
     await this.driver.saveScreenshot(getNamePhoto());
 });
