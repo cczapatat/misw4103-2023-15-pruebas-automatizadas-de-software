@@ -52,6 +52,11 @@ Thumbs.db
 /kraken/node_modules/
 /kraken/.kraken/
 
+/krakenApriori/reports/
+/krakenApriori/reports/*
+/krakenApriori/node_modules/
+/krakenApriori/.kraken/
+
 /cypress/cypress/downloads/
 /cypress/cypress/screenshots/
 /cypress/node_modules/
