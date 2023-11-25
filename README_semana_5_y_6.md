@@ -9,53 +9,17 @@
 | Juan Carlos Torres | jc.torresm1@uniandes.edu.co | @jctorresm1 |
 | Cristian Camilo Zapata Torres | c.zapatat@uniandes.edu.co | @cczapatat |
 
-<hr/>
-<hr/>
-
-## Readme Semana 5 y 6
-
-[Click](README_semana_5_y_6.md)
-
-<hr/>
-<hr/>
-
 ## Evidencias Reportes
 
-[Link Semana 7](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EiNMLQU4w3FMnZ1dOy0DnJ4BZLVx14xNykzYMHRTCtMgcQ?e=fMsiFe)
+[Video](https://uniandes-my.sharepoint.com/:v:/g/personal/c_zapatat_uniandes_edu_co/EX9CekpxZoxGnh_jmBUBuKEBnTIG6AEukxO4ySjG_0G7Ig?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=aYIKfY)
 
-<hr/>
-<hr/>
+[Link Semana 5](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EnUNGiY18TlHggg4oBkc2o0B9Ac1OewDzjArNLharPirXg?e=aVX2by)
+
+[Link Semana 6](https://uniandes-my.sharepoint.com/:f:/g/personal/c_zapatat_uniandes_edu_co/EtNqBJCW8UxCrJRyCIidgUcBfv7fJsM4KGApa4DDwOPU6Q?e=YCkAHl)
 
 ## Instrucciones
 
-A continuación se mencionaran pasos, requisitos y consideraciones importantes para correr los escenarios de prueba y las distribuciones realizadas para el uso de generación de datos.
-
-<hr/>
-<hr/>
-
-## Distribución de las estrategias de generación de Datos
-
-### Pool de Datos A-priori
-
-Se generaron **30** escenarios usando el proyecto Kraken y sus bondades de "Scenario Outline" por "Examples".
-
-- **krakenApriori/features**
-
-### Pool de Datos (Pseudo) Aleatorio Dinámico
-
-Se generaron **30** escenarios usando el proyecto Cypress y Mokaroo, en donde se crearon 4 Apis.
-
-- **cypress/cypress/e2e/scenarios/pseudo**
-
-### Escenario aleatorio
-
-Se utilizaron los escenarios iniciales de las actividades donde se implemento la herramienta de Faker, donde se hizo una distribución **30** en Cypress y **30** en Krake.
-
-- **cypress/cypress/e2e/scenarios**  (No se incluye la carpeta psedudo ya que pertenece a la estrategia anterior)
-- **kraken/features**
-
-<hr/>
-<hr/>
+A continuación se mencionaran pasos, requisitos y consideraciones importantes para correr los escenarios de prueba de los diferentes proyectos en Kraken y Cypress.
 
 ### Requisitos Generales
 
@@ -63,16 +27,24 @@ Estos requisitos son aplicables a los escenarios de ambos proyectos (Kraken y Cy
 
 * Se requiere tener NodeJs y NPM instalados, aquí recomendamos utilizar [NVM](https://github.com/nvm-sh/nvm), ya que cada proyecto usa una versión diferente de NodeJs.
 
-* Se requiere contar con el aplicativo Ghost en la siguiente versión **5.68.0**.
+* Se requiere contar con el aplicativo Ghost en las siguientes versiones **5.68.0** y **5.8.0**.
+
+```bash
+docker run -d -e url=http://localhost:3100 -p 3100:2368 --name ghost_5.8 ghost:5.8
+```
 
 ```bash
 docker run -d --name ghost_5.68.0 -e NODE_ENV=development -e url=http://localhost:2368 -p 2368:2368 ghost:5.68.0
 ```
 
-* Ingresar a la URL donde se ejecuta Ghost y al final de la URL escribir **/ghost**, lo cual es la vista como administrador.
+* Ingresar a cada URL donde está ejecutandose Ghost y al final de la URL escribir **/ghost**, lo cual es la vista como administrador.
 
 ```sh
 http://localhost:2368/ghost
+```
+
+```sh
+http://localhost:3100/ghost
 ```
 
 * Utilice esta misma URL y ajustela en los archivos de configuración de cada proyectos *cypress.config.js* y *kraken.config.js*
@@ -88,10 +60,9 @@ http://localhost:2368/ghost
 }
 ```
 
-* Posterior a la instalación de Ghost podra ir a los diferentes aplicativos de Cypress, Kraken y KrakeApriori, en los cuales encontrará  posibles comandos para su ejecución.
-
-<hr/>
-<hr/>
+* Posterior a la instalación de Ghost podra ir a los diferentes aplicativos de Cypress y Kraken, en los cuales encontrará dos posibles comandos uno para cada versión de ghost y sistema operativo.
+* * Los comandos terminados en **:new** hacen referencia al versión de Ghost **5.68.0**
+* * Los comandos terminados en **:old** hacen referencia al versión de Ghost **5.8.0**
 
 ### Correr pruebas Cypress
 
@@ -143,10 +114,18 @@ Unix
 npm run cypressos:new
 ```
 
+```bash
+npm run cypressos:old
+```
+
 Windows
 
 ```bash
 npm run cypresswin:new
+```
+
+```bash
+npm run cypresswin:old
 ```
 
 * Seleccionar E2E
@@ -157,9 +136,6 @@ npm run cypresswin:new
 *Para mayor información sobre como ejecutar un proyecto Cypress puede dirigirse a la siguiente*
 
 [Guia](https://thesoftwaredesignlab.github.io/AutTestingCodelabs/cypress-tutorial/index.html#0)
-
-<hr/>
-<hr/>
 
 ### Correr pruebas Kraken
 
@@ -238,6 +214,10 @@ Unix
 npm run krakenos:new
 ```
 
+```bash
+npm run krakenos:old
+```
+
 Windows
 
 ##### Consideraciones
@@ -248,33 +228,35 @@ Windows
 npm run krakenwin:new
 ```
 
+```bash
+npm run krakenwin:old
+```
+
 **Para la ejecución de multiples archivos scenario_X.feature en WINDOWS se DEBE ejecutar el siguiente commando que actualiza los nombres de los archivos .feature y se ejecute el commando krakenwin por cada archivo .feature. Si se presenta algún error o cancela el comando, los archivos quedaran renombrados con .featured y sera necesario renombrarlos a su nombre inicial**
 
 ```bash
 npm run krakenwinmulti:new
 ```
 
-<hr/>
-<hr/>
+```bash
+npm run krakenwinmulti:old
+```
 
-### Correr pruebas KrakenApriori
+### VRT
+
+### Correr Backstop
 
 #### Requisitos
 
 * NodeJs en versión **16.20.2**
 * NPM en versión **8.19.4**
-* Kraken en version **1.0.24**
-
-#### Consideraciones
-
-* Aplica las misma consideraciones del proyecto Kraken.
 
 #### Pasos
 
-* Ubicarse en la carpeta de *krakenApriori*
+* Ubicarse en la carpeta de *backstop*
 
 ```sh
-cd krakenApriori
+cd backstop
 ```
 
 * Instalar node en la versión **16.20.2**
@@ -290,51 +272,97 @@ nvm use 16.20.2
 * Instalar Kraken de forma global
 
 ```bash
-npm install kraken-node -g
+npm install -g backstopjs
 ```
 
-* Instalar dependecias del proyecto
+* Ejecutar uno de los siguientes comandos de acuerdo al sistema operativo.
+
+Unix
+
+* * Generar imagen referencia
+
+```bash
+npm run backstopos:ref
+```
+
+* * Generar imagen comparación
+
+```bash
+npm run backstopos:test
+```
+
+* * Puede también ejecutar ambos comandos solo corriendo.
+
+```bash
+npm run backstopos
+```
+
+Windows
+
+* * Generar imagen referencia
+
+```bash
+npm run backstopwin:ref
+```
+
+* * Generar imagen comparación
+
+```bash
+npm run backstopwin:test
+```
+
+* * Puede también ejecutar ambos comandos solo corriendo.
+
+```bash
+npm run backstopwin
+```
+
+* Al finalizar los comandos sino se visualiza el reporte directo en el navegador puede desplegar el archivo de la ruta
+
+```sh
+backstop/backstop_data/html_report/index.html
+```
+
+### Correr Resemblejs
+
+#### Requisitos
+
+* NodeJs en versión **18.18.2**
+* NPM en versión **9.8.1**
+* Haber ejecutado el proyecto Cypress en ambas versiones (**new** y **old**)
+
+#### Pasos
+
+* Ubicarse en la carpeta de *cypress*
+
+```sh
+cd cypress
+```
+
+* Instalar node en la versión **18.18.2**
+
+```bash
+nvm install 18.18.2
+```
+
+```bash
+nvm use 18.18.2
+```
+
+* Instalar dependencias
 
 ```bash
 npm install
 ```
 
-* Instalar Appium de forma global
+* Ejecutar resembleJs.
 
 ```bash
-npm install -g appium
+npm run resemble:run
 ```
 
-* Ejecutar el siguiente comando para validar dependencias.
+* Al finalizar deberá desplegar el archivo que esta en la siguiente ruta
 
-```bash
-npx kraken-node doctor
-```
-
-![Dependencias OK](./imgs/dependenciasKrakenOK.png)
-
-*Para mayor información sobre como ejecutar un proyecto Kraken puede dirigirse a la siguiente*
-
-[Guia](https://thesoftwaredesignlab.github.io/AutTestingCodelabs/kraken-web-testing-tool/index.html#0)
-
-##### Antes de Correr las pruebas
-
-Para la ejecución de los escenarios en este proyecto es necesario garantizar que solo un archivo tenga la extensión **.feature** al interior de la carpeta **krakenApriori/features**, para esto deberá sobreescribir los archivos contrarios al que desea ejecutar, luego restaurar el nombre y renombrar los contrarios, esto con el fin de cada escenario se ejecute de forma individual y correctamente.
-
-![Ejemplo](./imgs/renombrarFiles.png)
-
-* Ejecutar escenarios de prueba
-
-Lista de comandos:
-
-Unix
-
-```bash
-npm run krakenos:new
-```
-
-Windows
-
-```bash
-npm run krakenwin:new
+```sh
+cypress/vrt/results/report.html
 ```

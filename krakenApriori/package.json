@@ -1,8 +1,7 @@
 {
   "scripts": {
     "krakenos:new": "VERSION=5.68.0 ./node_modules/.bin/kraken-node run",
-    "krakenwin:new": "set VERSION=5.68.0 && .\\node_modules\\.bin\\kraken-node run",
-    "krakenwinmulti:new": "set VERSION=5.68.0 && node runwinkraken.js"
+    "krakenwin:new": "set VERSION=5.68.0 && .\\node_modules\\.bin\\kraken-node run"
   },
   "dependencies": {
     "chai": "^4.3.10",
