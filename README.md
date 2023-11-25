@@ -39,13 +39,13 @@ A continuación se mencionaran pasos, requisitos y consideraciones importantes p
 
 Se generaron **30** escenarios usando el proyecto Kraken y sus bondades de "Scenario Outline" por "Examples".
 
-- **krakenApriori/features**
+- [**krakenApriori/features**](https://github.com/cczapatat/misw4103-2023-15-pruebas-automatizadas-de-software/tree/main/krakenApriori/features)
 
 ### Pool de Datos (Pseudo) Aleatorio Dinámico
 
 Se generaron **30** escenarios usando el proyecto Cypress y Mokaroo, en donde se crearon 4 Apis.
 
-- **cypress/cypress/e2e/scenarios/pseudo**
+- [**cypress/cypress/e2e/scenarios/pseudo**](https://github.com/cczapatat/misw4103-2023-15-pruebas-automatizadas-de-software/tree/main/cypress/cypress/e2e/scenarios/pseudo)
 
 ### Escenario aleatorio
 
