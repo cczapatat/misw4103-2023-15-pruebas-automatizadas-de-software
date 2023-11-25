@@ -33,10 +33,18 @@ function selectComponent(context, componentDetails) {
     return context.driver.$(componentDetails);
 }
 
-async function login(context) {
+async function login(context, useBadCredentials = false) {
     await context.driver.url(`${URL_BASE}/signin/`);
-    await selectComponent(context, '.gh-input.email').setValue(configProperties.env.email);
-    await selectComponent(context, '.gh-input.password').setValue(configProperties.env.password);
+
+    if (useBadCredentials) {
+        await selectComponent(context, '.gh-input.email').setValue(faker.internet.email().toLowerCase());
+        await selectComponent(context, '.gh-input.password').setValue(faker.internet.password().toLowerCase());
+    } 
+    else 
+    {
+        await selectComponent(context, '.gh-input.email').setValue(configProperties.env.email);
+        await selectComponent(context, '.gh-input.password').setValue(configProperties.env.password);
+    }
 
     await selectComponent(context, 'button[type="submit"]').click();
 
@@ -73,6 +81,30 @@ async function hasNoTagNameOnScreen(context) {
     assert.equal(errorContent, 'You must specify a name for the tag.');
 }
 
+async function hasNoEmailOnScreen(context) {
+    const selectedComponent = await selectComponent(context, 'div.gh-cp-member-email-name .error .response');
+    const errorContent = await selectedComponent.getText();
+    await wait(1)
+    assert.exists(selectedComponent);
+    assert.equal(errorContent, 'Please enter an email.');
+}
+
+async function hasNoteTooLongOnScreen(context) {
+    const selectedComponent = await selectComponent(context, 'div.form-group.mb0.gh-member-note.error .response');
+    const errorContent = await selectedComponent.getText();
+    await wait(1)
+    assert.exists(selectedComponent);
+    assert.equal(errorContent, 'Note is too long.');
+}
+
+async function hasWrongEmailOnScreen(context) {
+    const selectedComponent = await selectComponent(context, 'section .main-error');
+    const errorContent = await selectedComponent.getText();
+    await wait(1)
+    assert.exists(selectedComponent);
+    assert.include(errorContent, 'There is no user with that email address');
+}
+
 async function addTagToPost(context, tag) {
     await selectComponent(context, 'button[title="Settings"]').click();
     await wait(1);
@@ -88,15 +120,41 @@ async function addTagToPost(context, tag) {
     await wait(0.5);
 }
 
-async function containsSpan(context, value) {
-    const span = await selectComponent(context, `span=${value}`);
-    assert.exists(span);
+
+async function doNotContainLastEmail(context) {
+    const component = await selectComponent(context, `.gh-members-list-email`);
+    const text = await component.getText();
+    assert.notEqual(text, lastCreatedEmail); 
 }
 
 async function containLastEmail(context) {
     const component = await selectComponent(context, `.gh-members-list-email`);
     const text = await component.getText();
     assert.equal(text, lastCreatedEmail); 
+}
+
+async function clicksOnLastMember(context) {
+    const component = await selectComponent(context, `.gh-members-list-email`);
+    await component.click();
+    await wait(1);
+}
+
+async function clickOnActions(context) {
+    const component = await selectComponent(context, `div.gh-canvas-header.sticky.gh-member-header > header > section .gh-btn-action-icon`);
+    await component.click();
+    await wait(1);
+}
+
+async function clickOnDelete(context) {
+    const component = await selectComponent(context, `.mr2 > .red`);
+    await component.click();
+    await wait(1);
+}
+
+async function confirmDelete(context) {
+    const component = await selectComponent(context, `.modal-content > .modal-footer > .gh-btn-red`);
+    await component.click();
+    await wait(1);
 }
 
 async function createMember(context) {
@@ -703,6 +761,15 @@ Then('Admin sees {int} pages', async function (total) {
     await this.driver.saveScreenshot(getNamePhoto());
 });
 
+When('Admin logout', async function () {
+    await logout(this);
+});
+
+When('Admin perform a wrong login', async function () {
+    await login(this,true);
+});
+
+
 When('Admin clicks on new Member', async function () {
     await createMember(this);
 });
@@ -714,6 +781,54 @@ When('Admin creates a new member', async function () {
     await createNewMember(this, memberName, memberEmail, memberNote);
 });
 
+When('Admin creates a new member without email', async function () {
+    const memberName = faker.person.fullName();
+    const memberEmail = '';
+    const memberNote = faker.company.buzzPhrase();
+    await createNewMember(this, memberName, memberEmail, memberNote);
+});
+
+When('Admin creates a new member with long note', async function () {
+    const memberName = faker.person.fullName();
+    const memberEmail = faker.internet.email().toLowerCase();
+    const memberNote = faker.lorem.words(150);;
+    await createNewMember(this, memberName, memberEmail, memberNote);
+});
+
+Then('Admin clicks on created member', async function () {
+    await clicksOnLastMember(this);
+});
+
+Then('Admin clicks on actions', async function () {
+    await clickOnActions(this);
+});
+
+Then('Admin clicks on delete', async function () {
+    await clickOnDelete(this);
+});
+
+Then('Admin clicks on confirm delete', async function () {
+    await confirmDelete(this);
+});
+
 Then('Admin sees last created email', async function () {
     await containLastEmail(this);
 });
+
+Then('Admin dont see last created email', async function () {
+    await doNotContainLastEmail(this);
+});
+
+Then('Admin sees no-email error on member screen', async function () {
+    await hasNoEmailOnScreen(this);
+});
+
+Then('Admin sees note-long error on member screen', async function () {
+    await hasNoteTooLongOnScreen(this);
+});
+
+Then('Admin sees invalid-email error on login screen', async function () {
+    await hasWrongEmailOnScreen(this);
+});
+
+
